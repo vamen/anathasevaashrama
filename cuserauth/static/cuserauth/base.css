@@ -1,0 +1,15 @@
+.jambo-style{
+
+    background-color: rgb(255, 255, 255) !important;
+    height: 10%;
+    padding: 0%;
+    text-align: center;
+}
+
+.heading{
+    font-family:  Helvetica, sans-serif;
+
+}
+.sub-text{
+    font-family: monospace;
+}
