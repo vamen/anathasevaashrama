@@ -12,11 +12,16 @@
             
             <!-- Latest compiled JavaScript -->
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            
+            {% block script %}
+            
+            {% endblock %} 
+
     </head>
     <body>
         <div class="container-full-bg ">
-                <div class="jumbotron jambo-style">
-                        <h2 class="heading">Anatha Seva Ashrama</h2>
+                     <div class="jumbotron jambo-style">
+                        <h2 class="heading">{{ college_name }}</h2>
                         <small class="sub-text">Attendence awareness system</small>   
                 </div>
                 <hr/>    
