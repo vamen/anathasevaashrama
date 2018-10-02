@@ -2,7 +2,7 @@ from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from .models import Incharge 
+from .models import Incharge,college 
 
 def index(request):
     college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
@@ -10,11 +10,12 @@ def index(request):
     
 @csrf_exempt
 def login(request):
+    
 
-    college=request.POST.get('college', False)
+    college_name=request.POST.get('college', False)
+
     user=request.POST["username"]
     password=request.POST["password"]
-
     print(college,user,password)
     
     college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
