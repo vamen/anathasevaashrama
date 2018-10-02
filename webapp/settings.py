@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':  'django.db.backends.postgresql_psycopg2',
-        'NAME': 'atd_data',
-        'USER':'atd_data_user',
-        'PASSWORD':'demigod',
+        'NAME': 'college_data',
+        'USER':'college_admin',
+        'PASSWORD':'root@1234',
         'HOST':'localhost'
     }
 }
