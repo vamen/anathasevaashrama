@@ -1,9 +1,8 @@
 function validate(){
-    
     var user=document.getElementById("username")
+    var sel = document.getElementById("colLister")
+    var pass = document.getElementById("password")
     
-    alert("logging in "+user.value)
-    
-
+    alert("Enter Valid data"+sel.value)
     return true
 }

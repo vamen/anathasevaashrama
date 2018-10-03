@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\cuserauth",
+    "\\cuserauth\\static",
+    "\\cuserauth\\static\\cuserauth",
+    "\\cuserauth\\static\\cuserauth\\script",
+    "\\cuserauth\\templates"
+  ],
+  "SelectedNode": "\\cuserauth\\views.py",
+  "PreviewInSolutionExplorer": false
+}

@@ -24,10 +24,10 @@
                                     <form id="login-form" action="/login" onsubmit="return validate()" method="post" role="form" style="display: block;">
                                         {% csrf_token %}
                                         <div class="form-group">
-                                                <select id="college" class="custom-select form-control" >
-                                                        <option selected>select school or college</option>
-                                                        {% for college in colleges %}
-                                                            <option value={{ forloop.counter }}>{{ college }}</option>
+                                                <select name ="colLister" id="colLister" class="custom-select form-control" >
+                                                        <option selected disabled>Select school or college</option>
+                                                        {% for id in ids %}
+                                                            <option value={{ id.college_id }}>{{ id.name }}</option>
                                                         {% endfor %}
                                                 </select>           
                                         </div>
