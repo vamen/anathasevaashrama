@@ -5,7 +5,7 @@ from django.db import models
 class college(models.Model):
     name = models.CharField(max_length=200)
     adress = models.CharField(max_length=200)
-    college_id = models.CharField(max_length=200,unique=True,default="None") 
+    college_id  = models.CharField(max_length=200,unique=True,default="None") 
     ld_phone  = models.CharField(max_length=20,default="None")
     sub_start = models.DateTimeField(blank=True)
     sub_end = models.DateTimeField(blank=True)
@@ -27,8 +27,8 @@ class offerd_course(models.Model):
 
     course = models.ForeignKey(course,on_delete=models.CASCADE)
     college = models.ForeignKey(college,on_delete=models.CASCADE)  
-    start = models.DateTimeField(blank = True,default="None")
-    end = models.DateTimeField(blank = True,default="None")
+    start = models.DateTimeField(blank = True)
+    end = models.DateTimeField(blank = True)
 
 
 class subjects(models.Model):
