@@ -5,7 +5,7 @@ $(document).ready(function(){
     alert("alert")
     $("#login-submit").click(function(){
             username=$("#username").val()
-            college=$("#coll_drop_down option:selected").text()         
+            college=$("#coll_drop_down").val()         
             password=$("#password").val()
             alert(username+":::"+college)
             $.ajax({
