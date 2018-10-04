@@ -2,20 +2,20 @@ from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from .models import Incharge,college 
+from .models import Incharge,College 
 from django.http import JsonResponse
 import json
 
 def index(request):
     #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
     
-    ids = list(college.objects.values('college_id','name'))
+    ids = list(College.objects.values('college_id','name'))
 
     return render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
 def _dashboard(request, userid):
 
-    userId = list(Incharge.objects.filter(id = userid).values_list('subject', flat = True))
-    print(userID)
+    userid = list(Incharge.objects.filter(id = userid).values_list('subject', flat = True))
+    print(userid)
     var = {"college_name":asd}
     return render_to_response("dash.html", var, RequestContext(request))
 @csrf_exempt
@@ -31,7 +31,7 @@ def login(request):
     #checks college name in database
 
     ##############################
-    coll_name = list(college.objects.filter(college_id=coll_id).values_list('name', flat = True))
+    coll_name = list(College.objects.filter(college_id=coll_id).values_list('name', flat = True))
     if len(coll_name) > 0 :
         #do something
         pass

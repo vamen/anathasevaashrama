@@ -47,12 +47,14 @@ class Subjects(models.Model):
 
 class Students(models.Model):
     section = models.ForeignKey(Section,on_delete=models.PROTECT)
+    course = models.ForeignKey(Course,on_delete=models.PROTECT)
+    college = models.ForeignKey(College,on_delete=models.PROTECT)  
+
     sname = models.CharField(max_length=200)
     parent = models.CharField(max_length=200)
     
     phones = models.CharField(max_length=200) 
-    course = models.ForeignKey(course,on_delete=models.PROTECT)
-    college = models.ForeignKey(college,on_delete=models.PROTECT)  
+    
     roll_no=models.CharField(max_length=200,unique=True,default="None")
     year=models.IntegerField()    
     
