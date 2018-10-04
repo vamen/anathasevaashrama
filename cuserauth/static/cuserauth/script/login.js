@@ -13,9 +13,12 @@ $(document).ready(function(){
                 url: "/login",
                 data: JSON.stringify({"username":username,"college":college,"password":password}),
                 success: function(msg){
-                    console.log("data "+response)
-                    if(msg.status == "success"){
+                    
+                    if(msg.status == 0){
                         alert("redirecting page ...")
+                    }
+                    else{
+                        alert("error in login data")
                     }
                 },
                 error:function(msg){
