@@ -16,6 +16,8 @@ $(document).ready(function(){
                     
                     if(msg.status == 0){
                         alert("redirecting page ...")
+                        url="/dashboard/"+parseInt(msg.userid)
+                        $(location).attr('href',url)
                     }
                     else{
                         alert("error in login data")
