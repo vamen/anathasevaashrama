@@ -35,19 +35,20 @@ def login(request):
     if len(coll_name) > 0 :
         #do something
         pass
-    #
-    userId = list(Incharge.objects.filter(user_name=user, password=password).values_list('id', flat = True))
 
+    eid = list(Incharge.objects.filter(user_name=user, password=password).values_list('id', flat = True))
+    #userId = list(Incharge.objects.filter(id = int(eid[0])).values_list('subject.subject_name', flat = True))
+    #print("userid",userId)
     #print(type(ename[0]))
-    print(ename)
+    print(eid)
     status = 1
     message = 'Username or Password Invalid'
     #authenticated
-    if len(ename) > 0:
+    if len(eid) > 0:
         status = 0
         message = 'Success'
     print(status, message)
-    return JsonResponse({'status':status,'message':message, 'userid':userId})
+    return JsonResponse({'status':status,'message':message, 'userid':eid})
 '''    
 #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
     data={"college_name":user,"colleges":college}

@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class college(models.Model):
+class College(models.Model):
     name = models.CharField(max_length=200)
     adress = models.CharField(max_length=200)
     college_id  = models.CharField(max_length=200,unique=True,default="None") 
@@ -13,7 +13,7 @@ class college(models.Model):
     def  __str__(self):
         return self.name
 
-class course(models.Model):
+class Course(models.Model):
     # name and domain unique
     name = models.CharField(max_length=200)
     cource_id = models.CharField(max_length=200,default="None")
@@ -22,31 +22,31 @@ class course(models.Model):
     def  __str__(self):
         return self.name
 
-class section(models.Model):
+class Section(models.Model):
     #
-    course = models.ForeignKey(course,on_delete=models.CASCADE)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
     section_name = models.CharField(max_length = 5)
     year = models.IntegerField(default="None")
 
-class offerd_course(models.Model):
+class Offerd_course(models.Model):
 
-    course = models.ForeignKey(course,on_delete=models.CASCADE)
-    college = models.ForeignKey(college,on_delete=models.CASCADE)  
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    college = models.ForeignKey(College,on_delete=models.CASCADE)  
     start = models.DateTimeField(blank = True)
     end = models.DateTimeField(blank = True)
 
 
-class subjects(models.Model):
+class Subjects(models.Model):
     # multiple row entry if subjects comes in multiple year  
-    course = models.ForeignKey(course,on_delete=models.CASCADE)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
     subject_name = models.CharField(max_length=200)
     year = models.IntegerField(default=0)
 
     def  __str__(self):
         return self.subject_name
 
-class students(models.Model):
-    section = models.ForeignKey(section,on_delete=models.PROTECT)
+class Students(models.Model):
+    section = models.ForeignKey(Section,on_delete=models.PROTECT)
     sname = models.CharField(max_length=200)
     parent = models.CharField(max_length=200)
     
@@ -59,9 +59,9 @@ class students(models.Model):
     def  __str__(self):
         return self.sname
 
-class attendence(models.Model):
-    subject_session=models.ForeignKey(subjects,on_delete=models.PROTECT)
-    student=models.ForeignKey(students,on_delete=models.CASCADE)
+class Attendence(models.Model):
+    subject_session=models.ForeignKey(Subjects,on_delete=models.PROTECT)
+    student=models.ForeignKey(Students,on_delete=models.CASCADE)
     cfrom=models.TimeField()
     cto=models.TimeField()
     date=models.DateField()
@@ -70,12 +70,10 @@ class attendence(models.Model):
     def  __str__(self):
         return self.student.sname
 
-
-
 class Incharge(models.Model):
-    college = models.ForeignKey(college,on_delete=models.PROTECT)
-    subject = models.ForeignKey(subjects,on_delete=models.PROTECT)
-    section = models.ForeignKey(section,on_delete=models.PROTECT)
+    college = models.ForeignKey(College,on_delete=models.PROTECT)
+    subject = models.ForeignKey(Subjects,on_delete=models.PROTECT)
+    section = models.ForeignKey(Section,on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
     user_name= models.CharField(max_length=200,unique=True,default="None")
     password = models.CharField(max_length=200,default="password")
