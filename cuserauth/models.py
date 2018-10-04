@@ -22,6 +22,11 @@ class course(models.Model):
     def  __str__(self):
         return self.name
 
+class section(models.Model):
+    #
+    course = models.ForeignKey(course,on_delete=models.CASCADE)
+    section_name = models.CharField(max_length = 5)
+    year = models.IntegerField(default="None")
 
 class offerd_course(models.Model):
 
@@ -41,8 +46,10 @@ class subjects(models.Model):
         return self.subject_name
 
 class students(models.Model):
+    section = models.ForeignKey(section,on_delete=models.PROTECT)
     sname = models.CharField(max_length=200)
     parent = models.CharField(max_length=200)
+    
     phones = models.CharField(max_length=200) 
     course = models.ForeignKey(course,on_delete=models.PROTECT)
     college = models.ForeignKey(college,on_delete=models.PROTECT)  
@@ -68,9 +75,10 @@ class attendence(models.Model):
 class Incharge(models.Model):
     college = models.ForeignKey(college,on_delete=models.PROTECT)
     subject = models.ForeignKey(subjects,on_delete=models.PROTECT)
+    section = models.ForeignKey(section,on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
     user_name= models.CharField(max_length=200,unique=True,default="None")
     password = models.CharField(max_length=200,default="password")
-
+    
     def  __str__(self):
         return self.name

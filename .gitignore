@@ -108,3 +108,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+*.pyproj
+*.sln
+.vs/anathasevaashrama/v15/.suo
+.vs/anathasevaashrama/v15/.suo
