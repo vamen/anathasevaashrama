@@ -21,10 +21,8 @@
               <div class="panel-body">
                     <div class="row">
                             <div class="col-lg-12">
-                                    <form id="login-form" action="/login" onsubmit="return validate()" method="post" role="form" style="display: block;">
-                                        {% csrf_token %}
                                         <div class="form-group">
-                                                <select name ="colLister" id="colLister" class="custom-select form-control" >
+                                                <select name ="coll_drop_down" id="coll_drop_down" class="custom-select form-control" >
                                                         <option selected disabled>Select school or college</option>
                                                         {% for id in ids %}
                                                             <option value={{ id.college_id }}>{{ id.name }}</option>
@@ -44,11 +42,11 @@
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-sm-6 col-sm-offset-3">
-                                                    <input style="background-color: #111;color: white" type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                                                    <button id="login-submit" class="form-control btn btn-login" style="background-color: #111;color: white" tabindex="4">Log In</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                     
                                 </div>
                      </div>    
