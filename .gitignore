@@ -112,3 +112,4 @@ dmypy.json
 *.sln
 .vs/anathasevaashrama/v15/.suo
 .vs/anathasevaashrama/v15/.suo
+cuserauth/migrations/0002_auto_20181003_2045.py
