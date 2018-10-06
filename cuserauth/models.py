@@ -1,89 +1,135 @@
 from django.db import models
 
 # Create your models here.
+'''
+format to be used in medel
+    #Priority top to bottom
+        primary Key
+        Forign Key
+        fileds
+        classes
+'''
 
 class College(models.Model):
-    name = models.CharField(max_length=200)
-    adress = models.CharField(max_length=200)
-    college_id  = models.CharField(max_length=200,unique=True) 
-    ld_phone  = models.CharField(max_length=20)
-    sub_start = models.DateTimeField(blank=True)
-    sub_end = models.DateTimeField(blank=True)
+    #primary key
+    collegeCode  = models.CharField(max_length=20, primary_key=True, verbose_name = 'College Code')
+    #Fields
+    collegeName = models.CharField(max_length=20, blank=True, null = False, verbose_name = 'Name')
+    collegeAdress = models.CharField(max_length=200, blank=True, null = False, verbose_name = 'Address')
+    collegeLandLineNumber  = models.CharField(max_length=20, blank=True, null = False, verbose_name = 'Land Line Number')
+    collegeSubStart = models.DateTimeField(blank=True, verbose_name = 'Subscription Start Date')
+    collegeSubEnd = models.DateTimeField(blank=True, verbose_name = 'Subscription End Date')
     
+    #classes
     def  __str__(self):
-        return self.name
+        return self.collegeName
 
 class Course(models.Model):
-    # name and domain unique
-    name = models.CharField(max_length=200)
-    cource_id = models.CharField(max_length=200,default="None")
-    domain = models.CharField(max_length=200)
-    year = models.IntegerField(default=0)
+    #Fields
+    courceName = models.CharField(max_length=200,blank=True, null = False, verbose_name = 'Name')
+    courceDomain = models.CharField(max_length=20, blank=True, verbose_name = 'Domain')
+        
+    #classes
+    class Meta:
+        unique_together = ('courceName','courceDomain')
     def  __str__(self):
-        return self.name
+        return self.courceName
+        # name and domain unique    
+
 class Section(models.Model):
-    #
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    section_name = models.CharField(max_length = 5)
+    #Forign Key
+    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)
+    courseFK = models.ForeignKey(Course,on_delete=models.CASCADE)
+    #Fields
+    sectionName = models.CharField(max_length = 5)
     year = models.IntegerField(default=0)
 
+    #classes
+        #why? if i make nly secName and year i cant create new secs for different colleges
+    class Meta:
+        unique_together = ('collegeFK','courseFK','sectionName', 'year',)
+
     def  __str__(self):
-        return self.section_name
+        return self.sectionName+str(self.year)
 
 class Offerd_course(models.Model):
-
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    college = models.ForeignKey(College,on_delete=models.CASCADE)  
+    #Forign Key
+    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)
+    courseFK = models.ForeignKey(Course,on_delete=models.CASCADE)  
+    
+    #Fields
+    year = models.IntegerField(default=0)
     start = models.DateTimeField(blank = True)
     end = models.DateTimeField(blank = True)
-    
+    #classses
+    class Meta:
+        unique_together = ('collegeFK','courseFK',)
+    def  __str__(self):
+        return self.courseFK.courceName
 
 class Subjects(models.Model):
-    # multiple row entry if subjects comes in multiple year  
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    subject_name = models.CharField(max_length=200)
-    year = models.IntegerField(default=0)
+    #PrimaryKey
+    subjectCode = models.CharField(max_length=20, primary_key=True)
+    #ForignKey
+        # multiple row entry if subjects comes in multiple year  
+    courseFK = models.ForeignKey(Course,on_delete=models.CASCADE)
 
+    subjectName = models.CharField(max_length=20)
+    subjectYear = models.IntegerField(null=False)
+    #classes
     def  __str__(self):
-        return self.subject_name
+        return self.subjectName
 
 class Students(models.Model):
-    section = models.ForeignKey(Section,on_delete=models.PROTECT, null = True)
-    course = models.ForeignKey(Course,on_delete=models.PROTECT)
-    college = models.ForeignKey(College,on_delete=models.PROTECT)  
+    #PrimaryKey
+    StudentRollNo=models.CharField(max_length=200,primary_key=True)
+    #Forign Key
+    sectionFK = models.ForeignKey(Section,on_delete=models.PROTECT)
+    courseFK = models.ForeignKey(Offerd_course,on_delete=models.PROTECT)
+    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)  
 
-    sname = models.CharField(max_length=200)
-    parent = models.CharField(max_length=200)
-    
-    phones = models.CharField(max_length=200) 
-    
-    roll_no=models.CharField(max_length=200,unique=True)
-    year=models.IntegerField()    
-    
+    #fields
+    studentName = models.CharField(max_length=20,null = False)
+    studentParent = models.CharField(max_length=20,null = False)
+    studentPhone = models.CharField(max_length=10,null = False) 
+    year=models.IntegerField(null = False)    
+    #classes
     def  __str__(self):
-        return self.sname
+        return self.studentName
 
 class Attendence(models.Model):
-    subject_session=models.ForeignKey(Subjects,on_delete=models.PROTECT)
-    student=models.ForeignKey(Students,on_delete=models.CASCADE)
-    cfrom=models.TimeField()
-    cto=models.TimeField()
-    date=models.DateField()
-    status=models.IntegerField()
+    #Forign Key
+    subjectFK = models.ForeignKey(Subjects,on_delete=models.PROTECT)
+    studentFK = models.ForeignKey(Students,on_delete=models.CASCADE)
+    #fields
+    sessionfrom=models.TimeField()
+    sessionto=models.TimeField()
 
+    sessionDate=models.DateField()
+    studentstatus=models.IntegerField()
+    #classes
     def  __str__(self):
-        return self.student.sname
+        return self.studentFK.studentName
+
+class Lecturers(models.Model):
+
+    #Forign Key
+    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)
+    #Fields
+    LecturerName = models.CharField(max_length=200,default="None")
+    LecturerUsername= models.CharField(max_length=200,unique=True,default="None")
+    LecturerPassword = models.CharField(max_length=200,default="pass")
+    #classes
+    def  __str__(self):
+        return self.LecturerName
 
 class Incharge(models.Model):
-    college = models.ForeignKey(College,on_delete=models.PROTECT)
-    subject = models.ForeignKey(Subjects,on_delete=models.PROTECT)
-    sec = models.ForeignKey(Section,on_delete=models.PROTECT, null = True)
+    #Forign Key
+    lecturerFK = models.ForeignKey(Lecturers,on_delete=models.PROTECT)
+    sectionFK = models.ForeignKey(Section,on_delete=models.PROTECT)
+    subjectFK = models.ForeignKey(Subjects,on_delete=models.PROTECT) 
+    class Meta:
+        unique_together = ('lecturerFK','sectionFK', 'subjectFK')
 
-    name = models.CharField(max_length=200,default="None")
-    user_name= models.CharField(max_length=200,unique=True,default="None")
-    password = models.CharField(max_length=200,default="password")
-    
     def  __str__(self):
-        return self.name
-
-
+        return self.lecturerFK.LecturerName

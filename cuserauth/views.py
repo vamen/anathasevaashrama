@@ -2,24 +2,23 @@ from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from .models import Incharge,College,Subjects
+from .models import Lecturers,College,Subjects,Incharge
 from django.http import JsonResponse
 import json
 
 def index(request):
     #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
     
-    ids = list(College.objects.values('college_id','name'))
+    ids = list(College.objects.values('collegeCode','collegeName'))
+    print(ids)
     return render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
 
 def _dashboard(request, userid):
 
-    subs = list(Incharge.objects.filter(id = userid).values_list('subject_id', flat = True))
-    print("SUBSSSS",subs)
+    subs = list(Incharge.objects.filter(lecturerFK = userid).values('lecturerFK__LecturerName','sectionFK__sectionName','sectionFK__year' ,'subjectFK__subjectName'))
     for sub in subs:
-        sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
-    
-        print("SUBSSSS",sub_names)
+        #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
+        print("Subjects Taken",sub)
     var = {"college_name":subs}
     return render_to_response("dash.html", var, RequestContext(request))
 
@@ -32,14 +31,13 @@ def login(request):
     password=body["password"]
     print(coll_id, user, password)
     #check for college
-    coll = list(College.objects.filter(college_id=coll_id).values_list('id', flat = True))
-    #check for user
-    eid = list(Incharge.objects.filter(user_name=user, password=password).values_list('college_id', flat = True))
+    eid = list(Lecturers.objects.filter(collegeFK_id = coll_id, LecturerUsername=user, LecturerPassword=password).values_list('id', flat = True))
 
+    print("EID",eid)
     status = 1
     message = 'Username or Password Invalid'
     #authenticate
-    if eid==coll:
+    if len(eid) == 1:
         status = 0
         message = 'Success'
     print(status, message)
