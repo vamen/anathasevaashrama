@@ -14,7 +14,7 @@
         <th>Class</th>
         <th>Year</th>
             {% for tab in subjectsHandled %}
-            <tr><td>{{forloop.counter}}</td><td>{{ tab.subName }}</td><td>{{ tab.secName }}</td><td>{{ tab.year }}</td></tr>
+                <tr><td>{{forloop.counter}}</td><td>{{ tab.subName }}</td><td>{{ tab.secName }}</td><td>{{ tab.year }}</td></tr>
             {% endfor %}
     </table>
 {% endblock %} 
