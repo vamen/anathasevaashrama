@@ -6,6 +6,16 @@
     </script>
 {% endblock %}
 {% block content %}
-
+    <label for="remember"> {{ lecName }}</label>
+    <table summary="no_orderDate">
+    <tr>
+        <th>Sl no</th>
+        <th>Subject Name</th>
+        <th>Class</th>
+        <th>Year</th>
+            {% for tab in subjectsHandled %}
+            <tr><td>{{forloop.counter}}</td><td>{{ tab.subName }}</td><td>{{ tab.secName }}</td><td>{{ tab.year }}</td></tr>
+            {% endfor %}
+    </table>
 {% endblock %} 
    

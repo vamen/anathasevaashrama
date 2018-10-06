@@ -3,6 +3,7 @@ from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from .models import Lecturers,College,Subjects,Incharge
+from django.db.models import F
 from django.http import JsonResponse
 import json
 
@@ -15,12 +16,14 @@ def index(request):
 
 def _dashboard(request, collegeCode, userid):
 
-    subs = list(Incharge.objects.filter(lecturerFK = userid).values('lecturerFK__LecturerName','sectionFK__sectionName','sectionFK__year' ,'subjectFK__subjectName'))
+    subs = list(Incharge.objects.filter(lecturerFK = userid).annotate(lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'), subName = F('subjectFK__subjectName')).values('lName','secName','year' ,'subName'))
     for sub in subs:
         #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
         print("Subjects Taken",sub)
     collegeName = list(College.objects.filter(collegeCode = collegeCode).values_list('collegeName',flat = True))[0]
-    var = {"college_name":collegeName}
+    lecName = Lecturers.objects.get(id = userid)
+    print(lecName)
+    var = {"college_name":collegeName, "subjectsHandled":subs,"lecName":lecName}
     return render_to_response("dash.html", var, RequestContext(request))
 
 @csrf_exempt
