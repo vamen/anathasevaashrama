@@ -13,25 +13,26 @@ def index(request):
     print(ids)
     return render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
 
-def _dashboard(request, userid):
+def _dashboard(request, collegeCode, userid):
 
     subs = list(Incharge.objects.filter(lecturerFK = userid).values('lecturerFK__LecturerName','sectionFK__sectionName','sectionFK__year' ,'subjectFK__subjectName'))
     for sub in subs:
         #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
         print("Subjects Taken",sub)
-    var = {"college_name":subs}
+    collegeName = list(College.objects.filter(collegeCode = collegeCode).values_list('collegeName',flat = True))[0]
+    var = {"college_name":collegeName}
     return render_to_response("dash.html", var, RequestContext(request))
 
 @csrf_exempt
 def login(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    coll_id=body["college"]
+    collegeCode=body["college"]
     user=body["username"]
     password=body["password"]
-    print(coll_id, user, password)
+    print(collegeCode, user, password)
     #check for college
-    eid = list(Lecturers.objects.filter(collegeFK_id = coll_id, LecturerUsername=user, LecturerPassword=password).values_list('id', flat = True))
+    eid = list(Lecturers.objects.filter(collegeFK_id = collegeCode, LecturerUsername=user, LecturerPassword=password).values_list('id', flat = True))
 
     print("EID",eid)
     status = 1
@@ -41,6 +42,6 @@ def login(request):
         status = 0
         message = 'Success'
     print(status, message)
-    return JsonResponse({'status':status,'message':message, 'userid':eid})
+    return JsonResponse({'status':status,'message':message, 'userid':eid, 'collegeCode':collegeCode})
 
 
