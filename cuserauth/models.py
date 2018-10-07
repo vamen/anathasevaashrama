@@ -27,8 +27,7 @@ class College(models.Model):
 class Course(models.Model):
     #Fields
     courceName = models.CharField(max_length=200,blank=True, null = False, verbose_name = 'Name')
-    courceDomain = models.CharField(max_length=20, blank=True, verbose_name = 'Domain')
-        
+    courceDomain = models.CharField(max_length=20, blank=True, verbose_name = 'Domain')   
     #classes
     class Meta:
         unique_together = ('courceName','courceDomain')
@@ -77,6 +76,8 @@ class Subjects(models.Model):
     subjectName = models.CharField(max_length=20)
     subjectYear = models.IntegerField(null=False)
     #classes
+    class Meta:
+        unique_together = ('courseFK','subjectCode',)
     def  __str__(self):
         return self.subjectName
 
