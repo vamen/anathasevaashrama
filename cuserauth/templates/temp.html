@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div>
+    <b>{{ message }}</b>
+    <form action="/passwordChange" method="POST">
+        {% csrf_token %}
+        <label>User Name :</label>
+        <input type="text" id="username" name="username"/>
+        <br/>
+        <label>Password  :</label>
+        <input type="password" id="password" name="password"/>
+        <br>
+        <input type="submit" />
+    </form>
+</div>
+{% endblock %}

@@ -15,8 +15,17 @@ $(document).ready(function(){
                 success: function(msg){
                     
                     if(msg.status == 0){
+                        
                         alert("redirecting page ...")
-                        url="/dashboard/"+parseInt(msg.collegeCode)+"/"+parseInt(msg.userid)
+                        url="/dashboard/"+msg.collegeCode+"/"+parseInt(msg.userid)
+                        
+                        Cookies.set('userid', msg.userid);
+
+                        Cookies.set('collegeCode', msg.collegeCode);
+                        
+                        console.log(msg.token)    
+                        Cookies.set('token', msg.token);
+                        alert(msg.token)    
                         $(location).attr('href',url)
                     }
                     else{
