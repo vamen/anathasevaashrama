@@ -17,7 +17,6 @@ logger=init_logger()
 def index(request):
     #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
     
-<<<<<<< HEAD
     ids = list(College.objects.values('collegeCode','collegeName'))
     
     response = render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
@@ -48,11 +47,6 @@ def check_login(returntype):
                 return HttpResponseRedirect('/')
         return wrap        
     return outter_wrap
-=======
-    ids = College.objects.values('collegeCode','collegeName')
-    print(ids)
-    return render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
->>>>>>> c71eee64f05f4e1f173ddae2f7470fce635dd499
 
 
 @check_login("page")
@@ -68,7 +62,6 @@ def _dashboard(request, collegeCode, userid):
     var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName}
     return render_to_response("dash.html", var, RequestContext(request))
 
-<<<<<<< HEAD
 
 
 
@@ -117,7 +110,6 @@ def login(request):
             ids = list(College.objects.values('collegeCode','collegeName'))
             return render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
 
-=======
 def _populator(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -129,30 +121,7 @@ def _populator(request):
     students = Students.objects.filter(courseFK = subjectObj.courseFK,collegeFK_id = collegeCode, sectionFK = section)
 
     return JsonResponse({'students':students})
-@csrf_exempt
-def login(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    collegeCode=body["college"]
-    user=body["username"]
-    password=body["password"]
-    print(collegeCode, user, password)
-    #check for college
-    eid = list(Lecturers.objects.filter(collegeFK_id = collegeCode, LecturerUsername=user, LecturerPassword=password).values_list('id', flat = True))
-    
-    #eid = Lecturers.objects.get(collegeFK_id = collegeCode, LecturerUsername=user, LecturerPassword=password)
-    if not eid:
-        status = 1
-        message = 'Username or Password Invalid'
-    else:
-        status = 0
-        message = 'Success'
 
-    #authenticate
-    print("EID",eid)
-    print(status, message)
-    return JsonResponse({'status':status,'message':message, 'userid':eid, 'collegeCode':collegeCode})
->>>>>>> c71eee64f05f4e1f173ddae2f7470fce635dd499
 
 # Temperory code
 @csrf_exempt
