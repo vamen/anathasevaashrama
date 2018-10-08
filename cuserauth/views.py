@@ -11,7 +11,7 @@ from django.utils import timezone
 from .utils import authentication_utils 
 from .utils.logger_utils import init_logger
 from django.http import HttpResponseRedirect
-
+import openpyxl
 
 logger=init_logger()
 def index(request):
@@ -24,7 +24,25 @@ def index(request):
     response.set_cookie("token",None)
     
     return response 
+@csrf_exempt
+def excelReader(request):
+    excel_file = request.FILES["excel_file"]
+    print(excel_file)
+    wb = openpyxl.load_workbook(excel_file, data_only=True)
 
+    # getting a particular sheet by name out of many sheets
+    worksheet = wb["Sheet1"]
+    print(worksheet)
+    excel_data = list()
+    # iterating over the rows and
+    # getting value from each cell in row
+    for row in worksheet.iter_rows():
+        row_data = list()
+        for cell in row:
+            row_data.append(str(cell.value))
+        excel_data.append(row_data)
+    print(excel_data)
+    return HttpResponseRedirect('/')
 
 
 def check_login(returntype):
@@ -32,7 +50,11 @@ def check_login(returntype):
         def wrap(request,*args,**kwargs):
             userid=request.COOKIES.get('userid') 
             token=request.COOKIES.get('token')
-            entry=Lecturers.objects.get(pk=int(userid))
+          
+            if (token == "None") & (userid == "None"):
+                return HttpResponseRedirect('/')
+
+            entry=Lecturers.objects.get(id=int(userid))
             print(token,userid)
             if not token is None:
                 if token==entry.token:
@@ -43,7 +65,6 @@ def check_login(returntype):
                 response_dict["message"]="user logged out"
                 JsonResponse(response_dict)
             else:    
-
                 return HttpResponseRedirect('/')
         return wrap        
     return outter_wrap
@@ -51,7 +72,6 @@ def check_login(returntype):
 
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
-
     subs = Incharge.objects.filter(lecturerFK = userid).annotate(lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'), subName = F('subjectFK__subjectName')).values('lName','secName','year' ,'subName')
     for sub in subs:
         #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
