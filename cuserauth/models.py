@@ -129,7 +129,7 @@ class Lecturers(models.Model):
 
     #classes
     def  __str__(self):
-        return self.LecturerName
+        return self.LecturerUsername
 
 class Incharge(models.Model):
     #Forign Key
