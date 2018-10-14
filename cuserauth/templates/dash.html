@@ -40,7 +40,7 @@
             </div>
             <div id="attendance-info" class="collapse">
                 <span class="sub-heading">subjects Handled</span>    
-                <table id="section-table">    
+                <table id="attendance-table" class="display">    
                     <thead>
                         <tr>
                             <th>CODE</th>
@@ -54,17 +54,20 @@
                                 </td>
                                 <td >    {{ tab.subName }} 
                                 </td>
-                            <tr>
+                            </tr>
                         {% endfor %}                
                     </tbody>    
                 </table>     
             </div>
+
+      </div>
+      <div class="row">
             <div class="bar marks" data-toggle="collapse" data-target="#marks-info">       
                     <span class="sub-heading">  Marks  </span>    
             </div>    
-            <div id="marks-info" class="collapse">
+            <div id="marks-info" class="collapse" >
                     <span class="sub-heading">subjects Handled</span>    
-                    <table id="section-table">    
+                    <table id="marks-table" class="display">    
                         <thead>
                             <tr>
                                 <th>CODE</th>
@@ -78,45 +81,13 @@
                                     </td>
                                     <td >    {{ tab.subName }} 
                                     </td>
-                                <tr>
+                                </tr>
                             {% endfor %}                
                         </tbody>    
                     </table>     
                 </div>
       </div>
-    
-    <div class="row"> 
-        <div >    
-            <span class="sub-text">{{ tab.subName }}<span>
-        </div>
-        <div class="row">    
-            
-            
-                
-                <thead>
-                    <th>
-                        <td>Section</td>
-                        <td>Attendance</td>
-                        <td>Marks</td>
-                    </th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>    {{ tab.secName }} 
-                        </td>
-                    
-                    <td>
-                            <a href="#">attendance</a>
-                    </td>
-                    <td>
-                            <a href="#">marks</a>
-                    </td>
-                    </tr>    
-                </tbody>    
-            </table>
-        </div>
-    </div>   
- </div>
+</div>
  {% for tab in subjectsHandled %} 
  {% endfor %} 
   
