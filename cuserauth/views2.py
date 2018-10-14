@@ -14,10 +14,11 @@ def _sectionHandler(request):
         body = json.loads(body_unicode)
         collegeCode=body["collegeCode"]
         lectureId = body["userID"]
-        subID = body['subID']
-        sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subID).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
+        subCode = body['subCode']
+        sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subCode).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
         print(sec)
         return JsonResponse(sec)
+
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
