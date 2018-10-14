@@ -77,6 +77,9 @@ def excelReader(request):
     #    excel_data.append(row_data)
     
     return HttpResponseRedirect('/')
+def excel_upload(request):
+    return render_to_response("excel.html", {"tables":db_tables},RequestContext(request)) 
+
 def _sectionHandler(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8') 
@@ -87,6 +90,7 @@ def _sectionHandler(request):
         sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subID).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
         print(sec)
         return JsonResponse(sec) 
+
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
     collegeName = College.objects.get(collegeCode = collegeCode)
