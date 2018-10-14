@@ -7,13 +7,15 @@ from django.core.exceptions import ObjectDoesNotExist
 
 logger=init_logger()
 
+
 def check_login(returntype):
     def outter_wrap(function):
         def wrap(request,*args,**kwargs):
             userid=request.COOKIES.get('userid') 
             token=request.COOKIES.get('token')
-          
+            
             if (token == "None") and (userid == "None"):
+                logger.info("token is None")
                 return HttpResponseRedirect('/')
 
             entry=Lecturers.objects.get(id=int(userid))

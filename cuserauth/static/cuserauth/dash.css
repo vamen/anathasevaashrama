@@ -1,5 +1,16 @@
+.bar{
+    margin-top:5px;
+     
+    width: 90%;
+}
+.attendance{
+
+    background-color: #4CAF50;
+}
+
 .bar-content {
     text-align: center;
+
 }
 
 .lecturer-name-box {

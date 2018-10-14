@@ -35,15 +35,24 @@
 {% block content %}
  <div class="container">
      <div class="row">
-            <span class="sub-heading">Subjects : </span>    
-     </div>
-    {% for tab in subjectsHandled %}
+            <div class="bar attendance" data-toggle="collapse" data-target="#subject-info">       
+                <span class="sub-heading">  Attendance  </span>    
+            </div>
+            <div id="subject-info" class="collapse">
+                    {% for tab in subjectsHandled %} 
+                        {{ tab.subName }}    
+                    {% endfor %}     
+            </div>    
+      </div>
+    
     <div class="row"> 
         <div >    
             <span class="sub-text">{{ tab.subName }}<span>
         </div>
         <div class="row">    
+            
             <table id="section-table">
+                
                 <thead>
                     <th>
                         <td>Section</td>
@@ -67,8 +76,9 @@
             </table>
         </div>
     </div>   
- </div> 
-    {% endfor %} 
+ </div>
+ {% for tab in subjectsHandled %} 
+ {% endfor %} 
   
 {% endblock %} 
    
