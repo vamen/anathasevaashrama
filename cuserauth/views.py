@@ -46,6 +46,7 @@ def logout(request):
     response.delete_cookie("token")
     response.delete_cookie("collegeCode")
     return response
+
 def excelDataValidation(option, excel):
     opt = int(option)
     if opt == 2:
@@ -79,19 +80,7 @@ def excelReader(request):
     #    excel_data.append(row_data)
     
     return HttpResponseRedirect('/')
-def excel_upload(request):
-    return render_to_response("excel.html", {"tables":db_tables},RequestContext(request)) 
-
-def _sectionHandler(request):
-    if request.method == 'POST':
-        body_unicode = request.body.decode('utf-8') 
-        body = json.loads(body_unicode)
-        collegeCode=body["collegeCode"]
-        lectureId = body["userID"]
-        subID = body['subID']
-        sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subID).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
-        print(sec)
-        return JsonResponse(sec) 
+ 
 
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
@@ -124,26 +113,6 @@ def login(request):
                
     else:
         HttpResponseRedirect("/")
-
-
-def _populator(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    collegeCode=body["college"]
-    subject=body["subject"]
-    lecture=body["lecture"]
-    section=body["section"]
-    subjectObj = Subjects.objects.get(subjectCode = subject)
-    print('subjectObj',subjectObj)
-    courseObj = Offerd_course.objects.get(courseFK = subjectObj.courseFK_id)
-    print('courseObj',courseObj)
-    sectionObj = Section.objects.get(sectionName = sec, year = 1)
-    print('sectionObj',sectionObj)
-    students = list(Students.objects.filter(collegeFK_id = collegeCode, sectionFK = sectionObj, courseFK = courseObj).values('StudentRollNo','studentName'))
-    #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
-    print(students)
-    return JsonResponse({'students':students})
-
 
 # Temperory code
 @csrf_exempt

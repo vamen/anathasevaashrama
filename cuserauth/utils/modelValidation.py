@@ -1,6 +1,11 @@
-def check_students(excel, model):
-    
-    pass
+StudentHeader = ['slno','name', 'class']
+def check_students(excel, Course):
+    print(excel.columns.values.tolist())
+    print(StudentHeader)
+    if(excel.columns.values.tolist() == StudentHeader):
+        pass
+    else:
+        return
 def check_cources(excel_File, model):
     if list(excel_File.dtypes) == ["int64", "O","O"]:
         print("sucess")
