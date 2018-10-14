@@ -81,25 +81,34 @@ class Subjects(models.Model):
     def  __str__(self):
         return self.subjectName
 
+class StudentInfo(models.Model):
+    StudentRollNo=models.CharField(max_length=200,primary_key=True)
+    studentName = models.CharField(max_length=20,null = False)
+    motherName = models.CharField(max_length=20,null = False)
+    fatherName = models.CharField(max_length=20,null = False)
+    email = models.EmailField(max_length=50,null = False)
+    fatherEmail = models.EmailField(max_length=50,null = True)
+    studentPhone = models.CharField(max_length=10,null = False)
+    fatherPhone = models.CharField(max_length=10,null = False)
+    #classes
+    def  __str__(self):
+        return self.studentName
+
 class Students(models.Model):
     #PrimaryKey
-    StudentRollNo=models.CharField(max_length=200,primary_key=True)
+    studentInfoFK=models.OneToOneField(StudentInfo, on_delete=models.CASCADE,primary_key=True)
     #Forign Key
     sectionFK = models.ForeignKey(Section,on_delete=models.PROTECT)
     courseFK = models.ForeignKey(Offerd_course,on_delete=models.PROTECT)
-    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)  
-
+    collegeFK = models.ForeignKey(College,on_delete=models.PROTECT)
     #fields
-    studentName = models.CharField(max_length=20,null = False)
-    studentParent = models.CharField(max_length=20,null = False)
-    studentPhone = models.CharField(max_length=10,null = False) 
     year=models.IntegerField(null = False)    
     #classes
     class Meta:
-        unique_together = ('StudentRollNo','courseFK','collegeFK','year')
+        unique_together = ('studentInfoFK','courseFK','collegeFK','year')
 
     def  __str__(self):
-        return self.studentName
+        return self.studentInfoFK.studentName
 
 class Attendence(models.Model):
     #Forign Key

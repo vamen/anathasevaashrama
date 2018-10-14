@@ -1,9 +1,9 @@
-StudentHeader = ['slno','name', 'class']
+StudentHeader = ['slno', 'rollno' , 'name', 'mother name', 'father name', 'email', 'father mail', 'phone', 'father phone']
 def check_students(excel, Course):
     print(excel.columns.values.tolist())
     print(StudentHeader)
     if(excel.columns.values.tolist() == StudentHeader):
-        pass
+        print("sucess")
     else:
         return
 def check_cources(excel_File, model):

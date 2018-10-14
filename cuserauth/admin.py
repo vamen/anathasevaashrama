@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 from cuserauth.models import *
-
+admin.site.register(StudentInfo)
 admin.site.register(College)
 admin.site.register(Incharge)
 admin.site.register(Course)

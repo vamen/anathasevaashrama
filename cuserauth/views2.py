@@ -13,7 +13,6 @@ def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
 
 @csrf_exempt
-
 def _sectionHandler(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8') 
@@ -22,7 +21,6 @@ def _sectionHandler(request):
         lectureId = body["userID"]
         subCode = body['subCode']
         sec = list(Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subCode).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year'))
-       
         return JsonResponse(json.dumps(sec),safe=False)
 
 def _studentUnderSub(request):
