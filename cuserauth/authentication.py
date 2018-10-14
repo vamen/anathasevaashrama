@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 
+logger=init_logger()
 
 def check_login(returntype):
     def outter_wrap(function):
@@ -12,11 +13,11 @@ def check_login(returntype):
             userid=request.COOKIES.get('userid') 
             token=request.COOKIES.get('token')
           
-            if (token == "None") & (userid == "None"):
+            if (token == "None") and (userid == "None"):
                 return HttpResponseRedirect('/')
 
             entry=Lecturers.objects.get(id=int(userid))
-            print(token,userid)
+            logger.info("LOGIN",token)
             if not token is None:
                 if token==entry.token:
                     return function(request,*args,**kwargs)
@@ -32,6 +33,9 @@ def check_login(returntype):
 
 
 def authenticate_user(collegeCode,user,password):
+    response_dict={}
+    message=""    
+    logger.info(collegeCode+" "+user+" "+password)
     try:
             row=Lecturers.objects.get(collegeFK_id = collegeCode, LecturerUsername=user)
         

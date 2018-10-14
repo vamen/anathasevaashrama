@@ -1,3 +1,24 @@
 .bar-content {
     text-align: center;
 }
+
+.lecturer-name-box {
+
+    padding: 20%;
+
+}
+.lecturer-name {
+
+    padding: 10px;
+    text-align: left;
+    font-size: 20px;
+}
+
+
+.logout-box:hover{
+background-color: rgb(211, 211, 211);
+}
+.logout-box{
+    padding: 10px;
+    text-align: center;
+}

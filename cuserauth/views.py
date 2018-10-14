@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section
 from django.db.models import F
 from django.http import JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
 import json
 from django.utils import timezone
 from .utils import authentication_utils 
@@ -15,16 +14,35 @@ from django.http import HttpResponseRedirect
 import openpyxl
 
 logger=init_logger()
+
+
 def index(request):
     #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
-    
+    userid=request.COOKIES.get('userid') 
+    token=request.COOKIES.get('token')
+    print(token)
+    collegeCode=token=request.COOKIES.get('collegeCode')
+
+    if not  (token is None or token==""):
+            print("redirecting"+token)
+            return HttpResponseRedirect('dashboard/'+collegeCode+"/"+userid)
+      
+
     ids = list(College.objects.values('collegeCode','collegeName'))
     
     response = render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
-    response.set_cookie("userid",None)
-    response.set_cookie("token",None)
-    
+    response.delete_cookie("userid")
+    response.delete_cookie("token")
+    response.delete_cookie("collegeCode")
     return response 
+
+def logout(request):
+    response=HttpResponseRedirect("/")
+    response.delete_cookie("userid")
+    response.delete_cookie("token")
+    response.delete_cookie("collegeCode")
+    return response
+
 @csrf_exempt
 def excelReader(request):
     excel_file = request.FILES["excel_file"]
@@ -51,9 +69,6 @@ def excelReader(request):
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
     subs = Incharge.objects.filter(lecturerFK = userid).annotate(lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'), subName = F('subjectFK__subjectName')).values('lName','secName','year' ,'subName')
-    for sub in subs:
-        #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
-        print("Subjects Taken",sub)
     collegeName = College.objects.get(collegeCode = collegeCode)
     lecName = Lecturers.objects.get(id = userid)
     print(type(lecName.LecturerName))
@@ -71,19 +86,11 @@ def login(request):
         password=body["password"]
         print(collegeCode, user, password)
         
-        response_dict={}
         #check for college
-        JsonResponse(authenticate_user(collegeCode,user,password)) 
+        return JsonResponse(authenticate_user(collegeCode,user,password)) 
                
     else:
-        ids = list(College.objects.values('collegeCode','collegeName'))
-        
-        response = render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
-        response.set_cookie("userid",None)
-        response.set_cookie("token",None)
-        
-        return response 
-
+        HttpResponseRedirect("/")
 
 
 def _populator(request):

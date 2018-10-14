@@ -2,6 +2,8 @@ $(document).ready(function(){
 
     // jQuery methods go here...
 
+    
+
     alert("alert")
     $("#login-submit").click(function(){
             username=$("#username").val()
@@ -15,9 +17,18 @@ $(document).ready(function(){
                 success: function(msg){
                     
                     if(msg.status == 0){
+                        console.log(msg)
                         alert("redirecting page ...")
-                        url="/dashboard/"+parseInt(msg.collegeCode)+"/"+parseInt(msg.userid)
+                        url="/dashboard/"+msg.collegeCode+"/"+parseInt(msg.userid)
                         $(location).attr('href',url)
+                        
+                        Cookies.set('userid', msg.userid);		
+		
+                        Cookies.set('collegeCode', msg.collegeCode);		
+                                
+                        console.log(msg.token)    		
+                        Cookies.set('token', msg.token);
+
                     }
                     else{
                         alert("error in login data")

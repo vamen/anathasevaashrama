@@ -21,8 +21,14 @@
     <body>
         <div class="container-full-bg ">
                      <div class="jumbotron jambo-style">
-                        <h2 class="heading">{{ college_name }}</h2>
-                        <small class="sub-text">Attendence awareness system</small>   
+                        <div>
+                            <h2 class="heading">{{ college_name }}</h2>
+                            <small class="sub-text">Attendence awareness system</small>
+                        </div> 
+                        <div class="container-full-bg">    
+                            {% block navbar %}
+                            {% endblock %}  
+                        </div>
                 </div>
                 <hr/>    
 

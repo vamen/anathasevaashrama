@@ -2,20 +2,73 @@
 {% load static %}
 
 {% block script %}
-    <script type="text/javascript"  src="{% static 'cuserauth/script/login.js' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'cuserauth/dash.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
+
+    <script type="text/javascript"  src="{% static 'cuserauth/script/dash.js' %}" >
     </script>
+    <script type="text/javascript"  src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" >
+    </script>
+
 {% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="row">  
+ 
+                <div class="col-md-4 ">
+                    <div class="navbar-header ">
+                    <a class="lecturer-name navbar-brand " href="#"> {{ lecName }}</a>
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2 logout-box">
+                    <a href="/logout"> logout </a>
+                </div>
+            </div>
+           </div>   
+    </div>
+
+{% endblock %}
+
 {% block content %}
-    <label for="remember"> {{ lecName }}</label>
-    <table summary="no_orderDate">
-    <tr>
-        <th>Sl no</th>
-        <th>Subject Name</th>
-        <th>Class</th>
-        <th>Year</th>
-            {% for tab in subjectsHandled %}
-                <tr><td>{{forloop.counter}}</td><td>{{ tab.subName }}</td><td>{{ tab.secName }}</td><td>{{ tab.year }}</td></tr>
-            {% endfor %}
-    </table>
+ <div class="container">
+     <div class="row">
+            <span class="sub-heading">Subjects : </span>    
+     </div>
+    {% for tab in subjectsHandled %}
+    <div class="row"> 
+        <div >    
+            <span class="sub-text">{{ tab.subName }}<span>
+        </div>
+        <div class="row">    
+            <table id="section-table">
+                <thead>
+                    <th>
+                        <td>Section</td>
+                        <td>Attendance</td>
+                        <td>Marks</td>
+                    </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>    {{ tab.secName }} 
+                        </td>
+                    
+                    <td>
+                            <a href="#">attendance</a>
+                    </td>
+                    <td>
+                            <a href="#">marks</a>
+                    </td>
+                    </tr>    
+                </tbody>    
+            </table>
+        </div>
+    </div>   
+ </div> 
+    {% endfor %} 
+  
 {% endblock %} 
    
