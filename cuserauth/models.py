@@ -30,7 +30,7 @@ class Course(models.Model):
     courceDomain = models.CharField(max_length=20, blank=True, verbose_name = 'Domain')   
     #classes
     class Meta:
-        unique_together = ('courceName','courceDomain')
+        unique_together = ('courceName','courceDomain',)
     def  __str__(self):
         return self.courceName
         # name and domain unique    

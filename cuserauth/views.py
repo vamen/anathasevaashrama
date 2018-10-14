@@ -77,22 +77,30 @@ def excelReader(request):
     #    excel_data.append(row_data)
     
     return HttpResponseRedirect('/')
-
-
-
-
+def _sectionHandler(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8') 
+        body = json.loads(body_unicode)
+        collegeCode=body["collegeCode"]
+        lectureId = body["userID"]
+        subID = body['subID']
+        sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subID).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
+        print(sec)
+        return JsonResponse(sec) 
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
-    subs = Incharge.objects.filter(lecturerFK = userid).annotate(lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'), subName = F('subjectFK__subjectName')).values('lName','secName','year' ,'subName')
-    
-    for sub in subs:
-        #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
-        print("Subjects Taken",sub)
     collegeName = College.objects.get(collegeCode = collegeCode)
     lecName = Lecturers.objects.get(id = userid)
     print(type(lecName.LecturerName))
-    var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName, "table":db_tables}
+    #lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'),
+    subs = Incharge.objects.filter(lecturerFK = lecName).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode' ,'subName').distinct()
+    for sub in subs:
+        #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
+        print("Subjects Taken",sub)
+        
+    var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName}
     return render_to_response("dash.html", var, RequestContext(request))
+
 
 @csrf_exempt
 def login(request):
