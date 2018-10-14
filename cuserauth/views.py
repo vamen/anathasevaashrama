@@ -14,6 +14,8 @@ from django.http import HttpResponseRedirect
 import pandas
 from django.apps import apps
 from .utils.modelValidation import *
+from .views2 import *
+
 db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 logger=init_logger()
 

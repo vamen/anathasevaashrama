@@ -35,14 +35,54 @@
 {% block content %}
  <div class="container">
      <div class="row">
-            <div class="bar attendance" data-toggle="collapse" data-target="#subject-info">       
+            <div class="bar attendance" data-toggle="collapse" data-target="#attendance-info">       
                 <span class="sub-heading">  Attendance  </span>    
             </div>
-            <div id="subject-info" class="collapse">
-                    {% for tab in subjectsHandled %} 
-                        {{ tab.subName }}    
-                    {% endfor %}     
+            <div id="attendance-info" class="collapse">
+                <span class="sub-heading">subjects Handled</span>    
+                <table id="section-table">    
+                    <thead>
+                        <tr>
+                            <th>CODE</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tab in subjectsHandled %}
+                            <tr id={{ tab.subCode }}>
+                                <td >    {{ tab.subCode }} 
+                                </td>
+                                <td >    {{ tab.subName }} 
+                                </td>
+                            <tr>
+                        {% endfor %}                
+                    </tbody>    
+                </table>     
+            </div>
+            <div class="bar marks" data-toggle="collapse" data-target="#marks-info">       
+                    <span class="sub-heading">  Marks  </span>    
             </div>    
+            <div id="marks-info" class="collapse">
+                    <span class="sub-heading">subjects Handled</span>    
+                    <table id="section-table">    
+                        <thead>
+                            <tr>
+                                <th>CODE</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tab in subjectsHandled %}
+                                <tr id={{ tab.subCode }}>
+                                    <td >    {{ tab.subCode }} 
+                                    </td>
+                                    <td >    {{ tab.subName }} 
+                                    </td>
+                                <tr>
+                            {% endfor %}                
+                        </tbody>    
+                    </table>     
+                </div>
       </div>
     
     <div class="row"> 
@@ -51,7 +91,7 @@
         </div>
         <div class="row">    
             
-            <table id="section-table">
+            
                 
                 <thead>
                     <th>
