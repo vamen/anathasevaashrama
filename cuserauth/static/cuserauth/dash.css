@@ -1,12 +1,21 @@
 .bar{
-    margin-top:5px;
-     
-    width: 90%;
+    margin-top:5px; 
+    padding: 5px;
+    padding-left: 10px;
+    color: white;
+    border-top-right-radius: 25px;
 }
 .attendance{
-
-    background-color: #4CAF50;
+    background-color: rgb(125, 245, 129);
 }
+
+.marks{
+    background-color: rgb(148, 180, 238);
+}
+
+.active, .attendance:hover {
+    background-color: rgb(59, 248, 65);
+  }
 
 .bar-content {
     text-align: center;
