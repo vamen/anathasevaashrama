@@ -95,6 +95,9 @@ class Students(models.Model):
     studentPhone = models.CharField(max_length=10,null = False) 
     year=models.IntegerField(null = False)    
     #classes
+    class Meta:
+        unique_together = ('StudentRollNo','courseFK','collegeFK','year')
+
     def  __str__(self):
         return self.studentName
 
@@ -120,9 +123,13 @@ class Lecturers(models.Model):
     LecturerName = models.CharField(max_length=200,default="None")
     LecturerUsername= models.CharField(max_length=200,unique=True,default="None")
     LecturerPassword = models.CharField(max_length=200,default="pass")
+    salt=models.CharField(max_length=200,default="pass")
+    token=models.CharField(max_length=512,default="pass")
+    LastPasswordChange=models.DateTimeField()
+
     #classes
     def  __str__(self):
-        return self.LecturerName
+        return self.LecturerUsername
 
 class Incharge(models.Model):
     #Forign Key
