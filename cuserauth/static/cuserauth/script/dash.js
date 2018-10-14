@@ -15,7 +15,7 @@ $(document).ready(function(){
         // token=Cookies.get("token")
        
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/sectionHandler",
 
             data: JSON.stringify({"collegeCode":college_code,"userID":userid,"subCode":subCode}),

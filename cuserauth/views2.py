@@ -3,21 +3,27 @@ from django.template import RequestContext
 from django.http import JsonResponse
 from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course
 import json
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import F
+
+
 db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 
 def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
 
+@csrf_exempt
+
 def _sectionHandler(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         body_unicode = request.body.decode('utf-8') 
         body = json.loads(body_unicode)
         collegeCode=body["collegeCode"]
         lectureId = body["userID"]
         subCode = body['subCode']
-        sec = Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subCode).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year')
-        print(sec)
-        return JsonResponse(sec)
+        sec = list(Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subCode).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year'))
+       
+        return JsonResponse(json.dumps(sec),safe=False)
 
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
