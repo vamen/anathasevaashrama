@@ -2,7 +2,7 @@ from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section
+from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course
 from django.db.models import F
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,8 +11,10 @@ from django.utils import timezone
 from .utils import authentication_utils 
 from .utils.logger_utils import init_logger
 from django.http import HttpResponseRedirect
-import openpyxl
-
+import pandas
+from django.apps import apps
+from .utils.modelValidation import *
+db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 logger=init_logger()
 def index(request):
     #college=["Anantha sevashram ,Malladihalli",'juniour college,chanagiri']
@@ -24,24 +26,38 @@ def index(request):
     response.set_cookie("token",None)
     
     return response 
+def excelDataValidation(option, excel):
+    opt = int(option)
+    if opt == 2:
+        check_cources(excel, Course)
+    if opt == 1:
+        check_students(excel, Students)
+
 @csrf_exempt
 def excelReader(request):
+    ex = request.POST['excel_type']
+    print(ex)
     excel_file = request.FILES["excel_file"]
     print(excel_file)
-    wb = openpyxl.load_workbook(excel_file, data_only=True)
-
+    wb = pandas.read_excel(excel_file, sheet_name=0)
+    wb = wb.dropna(how='all')
+    #wb = wb.rename(columns=wb.iloc[0]).drop(wb.index[0])
     # getting a particular sheet by name out of many sheets
-    worksheet = wb["Sheet1"]
-    print(worksheet)
-    excel_data = list()
+    #polls_tables = apps.get_app_config("cuserauth")
+    #print(wb.dtypes)
+    #print(polls_tables.models.keys())
+
+    excelDataValidation(ex, wb)
+    #if(wb['sl no'].dtype == pandas.Int64Index):
+    #    print(wb['sl no'])
     # iterating over the rows and
     # getting value from each cell in row
-    for row in worksheet.iter_rows():
-        row_data = list()
-        for cell in row:
-            row_data.append(str(cell.value))
-        excel_data.append(row_data)
-    print(excel_data)
+    #for row in worksheet.iter_rows():
+    #    row_data = list()
+    #    for cell in row:
+    #        row_data.append(str(cell.value))
+    #    excel_data.append(row_data)
+    
     return HttpResponseRedirect('/')
 
 
@@ -73,13 +89,14 @@ def check_login(returntype):
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
     subs = Incharge.objects.filter(lecturerFK = userid).annotate(lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'), subName = F('subjectFK__subjectName')).values('lName','secName','year' ,'subName')
+    
     for sub in subs:
         #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
         print("Subjects Taken",sub)
     collegeName = College.objects.get(collegeCode = collegeCode)
     lecName = Lecturers.objects.get(id = userid)
     print(type(lecName.LecturerName))
-    var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName}
+    var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName, "table":db_tables}
     return render_to_response("dash.html", var, RequestContext(request))
 
 @csrf_exempt
