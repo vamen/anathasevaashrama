@@ -1,21 +1,54 @@
 .bar{
-    margin-top:5px; 
     padding: 5px;
     padding-left: 10px;
     color: white;
-    border-top-right-radius: 25px;
+
+}
+
+.header>hr{
+    margin: 0%;
+}
+
+
+.navbar{
+    background: #1a1a1a;
 }
 .attendance{
-    background-color: rgb(125, 245, 129);
+    background-color:rgb(68, 68, 68);
+    /* color: #202020; */
+}
+
+
+
+.content-header{
+    margin: 0%;
+    width: 100%;
+    background: #4CAF50;
+    color: white;
+    padding-left: 15px;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.attendance-content-body{
+
+    padding: 15px;
+}
+
+
+.subject-bar-wrapper{
+
+    margin-top: 10px;
+    padding-top:15px; 
 }
 
 .marks{
     background-color: rgb(148, 180, 238);
 }
 
-.active, .attendance:hover {
+/* .active, .attendance:hover {
     background-color: rgb(59, 248, 65);
-  }
+  } */
 
 .bar-content {
     text-align: center;
@@ -27,18 +60,127 @@
     padding: 20%;
 
 }
+
 .lecturer-name {
-
-    padding: 10px;
+    color: white !important;
     text-align: left;
-    font-size: 20px;
+    margin: 0%
 }
 
 
-.logout-box:hover{
-background-color: rgb(211, 211, 211);
+
+
+.wrapper{
+    display: flex;
 }
-.logout-box{
-    padding: 10px;
-    text-align: center;
+
+.sidebar-wrapper {
+    z-index: 100;
+    /* left: 220px; */
+    color: #999999;
+    width: 20%;
+    height: 100%;
+    /* margin-left: -220px; */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #202020;
+
+
+}
+
+.page-content-wrapper {
+    /* width: 100%; */
+    background: #faf9f9;
+    flex: 1;
+
+    
+}
+
+.sidebar-nav {
+    position: absolute;
+    width: 20%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+  }
+  
+  .sidebar-nav li >a {
+    display: block;
+    text-decoration: none;
+    color: #999999;
+  }
+  
+  .sidebar-nav li >a:hover {
+    text-decoration: none;
+    color: #fff;
+    background:  rgb(0, 0, 0);
+  }
+  
+
+  .sidebar-nav li a:active, .sidebar-nav li a:focus {
+    text-decoration: none;
+  }
+  
+  .sidebar-nav>.sidebar-brand {
+    /* height: 65px; */
+    line-height: 40px;
+
+  }
+  
+  .sidebar-nav >.sidebar-brand > hr{
+
+    margin: 0%;
+  } 
+  .sidebar-nav>.sidebar-brand>a {
+    color: #999999;
+    align-content: center;
+    padding-top:5px; 
+    font-size: 30px;
+     
+
+  }
+  
+  .sidebar-nav>.sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+  }
+  
+
+  .logout-box:hover{
+    background-color: rgb(189, 189, 189);
+}
+   
+    
+
+  .logout-box{
+        display: inline-block;
+        padding-right:20px; 
+        border-color: rgb(199, 199, 199);
+        border-style:solid; 
+        border-width: thin;
+        margin-left: 10px;
+        line-height: 1.4;
+}
+
+    
+.sidebar-selected-item{
+    color: #fff !important;
+    background:#4CAF50 !important;
+
+    
+  }
+
+.sidebar-selected-item>active:after{
+
+}
+
+
+.mark-btn{
+    background: rgb(250, 146, 26);
+    color: #fff;
 }
