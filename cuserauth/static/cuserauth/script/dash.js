@@ -1,3 +1,4 @@
+
 function register_attendance_table_click(datatable){
     datatable.on('click','tbody td button',function(){
             // console.log("button click");
@@ -102,12 +103,19 @@ function fill_data_table(subCode,data){
 }
 
 
+function clean_page_content(){
+
+    console.log("cleaning")
+    $("#content-body").empty()
+    $("#content-header").text("")
+}
+
 function  update_attendenc_display(temp_data){
     
     
-    $("#attendance-content-body").empty()
+    $("#content-header").html("Attendance")
 
-    sectionHandler
+
     for(i=0;i<temp_data.length;i++){
         console.log(temp_data)
         subCode=temp_data[i]['subCode']
@@ -115,7 +123,7 @@ function  update_attendenc_display(temp_data){
         
 
         child1=$("<span>",{id:subCode,"class":"sub-heading"}).text(subCode+" | "+subName)
-        child2=$("<div>",{id:"attendance-info-"+subCode}).text("Loading ...")
+        child2=$("<div>",{id:"attendance-info-"+subCode})
 
         attendance=$("<div>",{"class":"bar attendance","data-toggle":"collapse","data-target":"#attendance-info-"+subCode})
         attendance.append(child1)
@@ -124,7 +132,7 @@ function  update_attendenc_display(temp_data){
         attendance=$("<div>",{"class":"subject-bar-wrapper"}).append(attendance)
         attendance.append(child2)
         
-        $("#attendance-content-body").append(attendance)
+        $("#content-body").append(attendance)
         
         
         table="<table id=\"table-"+subCode+"\"><thead><tr><th>Section </th><th>Year </th>\
@@ -161,54 +169,44 @@ function  update_attendenc_display(temp_data){
     
 
 
+}
 
     
 
+/////////////////////////////////////////////////////////////////////////////////
 
 
-
-
+function update_marks_display(){
+    $("#content-header").text("Marks");
+    
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+function update_notes_display(){
+    $("#content-header").text("Notes");
+    
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+function update_assignment_display(){
+    $("#content-header").text("Assignments");
+    
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     
     window.history.forward();
-    $("#datepicker").datetimepicker();
     // var marks_table=$('#marks-table').DataTable();
 
-    var attendance_table=$('#attendance-table').DataTable({
-        searching: false,
-        paging: false
-    });
+
 
     college_code=Cookies.get('collegeCode');
     userid=Cookies.get('userid');
-
-    temp_data=[{'subCode': '501', 'subName': 'ADA', 'sections': [{'subYear': 1, 'secName': 'A', 'year': 1},{'subYear': 1, 'secName': 'A', 'year': 2}]}, {'subCode': '502', 'subName': 'OS', 'sections': [{'subYear': 2, 'secName': 'A', 'year': 2}]}]
-    console.log(temp_data.length)
-    
-
-    $("#attendance").click(function(){
-        console.log("clicked")
-        $.ajax({
-            type: "POST",
-            url: "/subjectHandler",
-
-            data: JSON.stringify({"collegeCode":college_code,"userID":userid}),
-            success: function(msg){
-                console.log(msg)    
-                update_attendenc_display(temp_data);
-
-
-            },
-            error:function(msg){
-                console.log("response error")
-            },
-            dataType: "json"
-          });
-
-        
-    })
 
     // $("body").on('click','.datepick',function(){
     //     console.log(this)
@@ -261,6 +259,62 @@ $(document).ready(function(){
         document.getElementById("notes").classList.add('sidebar-selected-item');
     })
 
+ 
+//////////////////////////////////
+
+    temp_data=[{'subCode': '501', 'subName': 'ADA', 'sections': [{'subYear': 1, 'secName': 'A', 'year': 1},{'subYear': 1, 'secName': 'A', 'year': 2}]}, {'subCode': '502', 'subName': 'OS', 'sections': [{'subYear': 2, 'secName': 'A', 'year': 2}]}]
+    console.log(temp_data.length)
+    
+
+    $("#attendance").click(function(){
+        
+        
+        
+        $.ajax({
+            type: "POST",
+            url: "/subjectHandler",
+
+            data: JSON.stringify({"collegeCode":college_code,"userID":userid}),
+            success: function(msg){
+                console.log(msg)    
+                clean_page_content()
+                update_attendenc_display(temp_data);
+
+
+            },
+            error:function(msg){
+                console.log("response error")
+                clean_page_content()
+                update_attendenc_display(temp_data);
+            },
+            dataType: "json"
+          });
+
+        
+    })
+
+    
+    
+    $("#marks").click(function(){
+        clean_page_content();
+        update_marks_display();
+    });
+
+
+    $("#notes").click(function(){
+        clean_page_content();
+        update_notes_display();
+    });
+
+    $("#assignment").click(function(){
+        clean_page_content();
+        update_assignment_display();
+    });
+
+
+////////////////////////////////////////////////
+
     $("#attendance").trigger("click");
+
 
 })
