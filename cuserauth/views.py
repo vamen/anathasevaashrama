@@ -87,13 +87,26 @@ def _dashboard(request, collegeCode, userid):
     collegeName = College.objects.get(collegeCode = collegeCode)
     lecName = Lecturers.objects.get(id = userid)
     print(type(lecName.LecturerName))
+    subjectHandled = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode', 'subName').distinct())
+    print(subjectHandled)
+    listOfSubs = []
+    for subjectInfo in subjectHandled:
+        print(subjectInfo['subCode'])
+        listingSubs = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid, subjectFK_id = subjectInfo['subCode']).annotate(subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('subYear','secName', 'year'))
+        print(listingSubs)
+        dataAdd = {'subCode':subjectInfo['subCode'], 'subName':subjectInfo['subName'],'sections':listingSubs}
+        listOfSubs.append(dataAdd)
+        #lister.update
+    print(listOfSubs)
+    #sec = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(lecName = F('lecturerFK__LecturerName'),subCode = F('subjectFK__subjectName'), subName = F('subjectFK_id'),subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('lecName','subCode','subName','subYear','secName', 'year'))
+    #print(sec)
     #lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'),
-    subs = Incharge.objects.filter(lecturerFK = lecName).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode' ,'subName').distinct()
-    for sub in subs:
-        #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
-        print("Subjects Taken",sub)
+    #subs = Incharge.objects.filter(lecturerFK = lecName).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode' ,'subName').distinct()
+    #for sub in sec:
+    #    #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
+    #    print("Subjects Taken",sub)
         
-    var = {"college_name":collegeName.collegeName, "subjectsHandled":subs,"lecName":lecName.LecturerName}
+    var = {"college_name":collegeName.collegeName, "subjectsHandled":listOfSubs,"lecName":lecName.LecturerName}
     return render_to_response("dash.html", var, RequestContext(request))
 
 
