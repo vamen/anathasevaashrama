@@ -12,5 +12,6 @@ urlpatterns = [
     path('passwordChange',views.change_password,name='change Password'),
     path('excel_upload', views2.excel_upload, name = 'Excel'),
     path('attendenceButtonClick', views2._attendenceButtonClick, name = 'Attandence'),
-    path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections')
+    path('openAttendence', views2._openAttendence, name = 'openAttendence')
+    #path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections')
 ]

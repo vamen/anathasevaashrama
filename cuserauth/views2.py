@@ -13,22 +13,18 @@ def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
 
 @csrf_exempt
-def _sectionHandler(request, id):
-    #if request.method == 'POST':
-    print('Section')
-    #body_unicode = request.body.decode('utf-8')
-    #body = json.loads(body_unicode)
-    #in_id = body["id"]
-    #collegeCode=body["collegeCode"]
-    #lectureId = body["userID"]
-    #subCode = body['subCode']
-    sec = Incharge.objects.get(id = id)
-    studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
-
-    print(sec)
-    print(studentList)
-    return JsonResponse(json.dumps(studentList),safe=False)
-
+def _openAttendence(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        ID = body["clickID"]
+        print('Section')
+        sec = Incharge.objects.get(id = id)
+        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+        print(sec)
+        print(studentList)
+        return JsonResponse(json.dumps(studentList),safe=False)
+    
 def _attendenceButtonClick(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
