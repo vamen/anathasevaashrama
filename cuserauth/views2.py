@@ -29,8 +29,21 @@ def _sectionHandler(request, id):
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
 
+
+def _openAttendence(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        ID = body["clickID"]
+        print('Section')
+        sec = Incharge.objects.get(id = id)
+        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+        print(sec)
+        print(studentList)
+        return JsonResponse(json.dumps(studentList),safe=False)
+
 @csrf_exempt
-def subject_handeled_info(request):
+def subject_handeled_info(request):    
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
