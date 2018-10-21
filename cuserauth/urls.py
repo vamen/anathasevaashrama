@@ -7,9 +7,10 @@ urlpatterns = [
     path('login',views.login,name='login'),
     path('logout',views.logout,name='logout'),
     path('dashboard/<str:collegeCode>/<int:userid>/', views._dashboard, name= 'dashboard'),
-    path('studentUnderSub', views2._studentUnderSub, name= 'populator'),
+    #path('studentUnderSub', views2._studentUnderSub, name= 'populator'),
     path('exelFileReader',views.excelReader, name= 'excelReader'),
     path('passwordChange',views.change_password,name='change Password'),
     path('excel_upload', views2.excel_upload, name = 'Excel'),
-    path('sectionHandler', views2._sectionHandler, name = 'sections')
+    path('attendenceButtonClick', views2._attendenceButtonClick, name = 'Attandence'),
+    path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections')
 ]

@@ -13,15 +13,41 @@ def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
 
 @csrf_exempt
-def _sectionHandler(request):
+def _sectionHandler(request, id):
+    #if request.method == 'POST':
+    print('Section')
+    #body_unicode = request.body.decode('utf-8')
+    #body = json.loads(body_unicode)
+    #in_id = body["id"]
+    #collegeCode=body["collegeCode"]
+    #lectureId = body["userID"]
+    #subCode = body['subCode']
+    sec = Incharge.objects.get(id = id)
+    studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+
+    print(sec)
+    print(studentList)
+    return JsonResponse(json.dumps(studentList),safe=False)
+
+def _attendenceButtonClick(request):
     if request.method == 'POST':
-        body_unicode = request.body.decode('utf-8') 
+        body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         collegeCode=body["collegeCode"]
-        lectureId = body["userID"]
-        subCode = body['subCode']
-        sec = list(Incharge.objects.filter(lecturerFK_id = lectureId,subjectFK__subjectCode = subCode).annotate(secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('secName', 'year'))
-        return JsonResponse(json.dumps(sec),safe=False)
+        lecture = body["userID"]
+
+        subjectHandled = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode', 'subName').distinct())
+        print(subjectHandled)
+        listOfSubs = []
+        for subjectInfo in subjectHandled:
+            print(subjectInfo['subCode'])
+            listingSubs = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid, subjectFK_id = subjectInfo['subCode']).annotate(subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('id','subYear','secName', 'year'))
+            print(listingSubs)
+            dataAdd = {'subCode':subjectInfo['subCode'], 'subName':subjectInfo['subName'],'sections':listingSubs}
+            listOfSubs.append(dataAdd)
+            #lister.update
+        print(listOfSubs)
+        return JsonResponse({'subjectsHandled':listOfSubs})
 
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
