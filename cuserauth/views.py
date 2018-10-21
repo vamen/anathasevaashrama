@@ -87,7 +87,7 @@ def _dashboard(request, collegeCode, userid):
     collegeName = College.objects.get(collegeCode = collegeCode)
     lecName = Lecturers.objects.get(id = userid)
     print(type(lecName.LecturerName))
-    
+    print("dashboard")
     #sec = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(lecName = F('lecturerFK__LecturerName'),subCode = F('subjectFK__subjectName'), subName = F('subjectFK_id'),subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('lecName','subCode','subName','subYear','secName', 'year'))
     #print(sec)
     #lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'),

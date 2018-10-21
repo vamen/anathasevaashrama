@@ -29,38 +29,40 @@ def _sectionHandler(request, id):
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
 
-
-def _openAttendence(request):
+@csrf_exempt
+def _openAttendance(request):
     if request.method == 'POST':
+        print("_openAttendence")
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        ID = body["clickID"]
+        ID = body["id"]
         print('Section')
-        sec = Incharge.objects.get(id = id)
+        sec = Incharge.objects.get(id = int(ID))
         studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
-        print(sec)
-        print(studentList)
+        #print(sec)
+        #print(studentList)
         return JsonResponse(json.dumps(studentList),safe=False)
 
 @csrf_exempt
 def subject_handeled_info(request):    
     if request.method == 'POST':
+        print("_openAttendence")
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         collegeCode=body["collegeCode"]
         userid = body["userID"]
 
         subjectHandled = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode', 'subName').distinct())
-        print(subjectHandled)
+        
         listOfSubs = []
         for subjectInfo in subjectHandled:
-            print(subjectInfo['subCode'])
+            #print(subjectInfo['subCode'])
             listingSubs = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid, subjectFK_id = subjectInfo['subCode']).annotate(subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('id','subYear','secName', 'year'))
-            print(listingSubs)
+            #print(listingSubs)
             dataAdd = {'subCode':subjectInfo['subCode'], 'subName':subjectInfo['subName'],'sections':listingSubs}
             listOfSubs.append(dataAdd)
             #lister.update
-        
+        print(listOfSubs)
         return JsonResponse(listOfSubs,safe=False)
 
 def _studentUnderSub(request):
