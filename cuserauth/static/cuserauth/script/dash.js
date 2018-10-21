@@ -5,8 +5,11 @@ function register_attendance_table_click(datatable){
             // console.log(datatable.id)
             // // this.parent.parent.id
             // // this.
+
+            
             subCode=datatable.table().node().id.split("-")[1]
             var data=datatable.row($(this).closest('tr')).data()
+            var id=datatable.row($(this).closest('tr')).id().split("-")[1]
             // var idx = datatable.cell('.selected', 0).index();
             // var data = datatable.row( idx.row ).data();
             secName=data[0]
@@ -27,7 +30,7 @@ function register_attendance_table_click(datatable){
                 type: "POST",
                 url: "/openAttendance",
     
-                data: JSON.stringify({"collegeCode":college_code,"userID":userid,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}),
+                data: JSON.stringify({"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}),
                 success: function(msg){
                     
                    console.log(msg)    
@@ -83,7 +86,7 @@ function fill_data_table(subCode,data){
       time_elm1_html=time_elm1.prop("outerHTML")
       time_elm2_html=time_elm2.prop("outerHTML")
       
-       row+="<tr><td>"+secName+
+       row+="<tr id=\""+subCode+"-"+data[j]["id"]+"\"><td>"+secName+
        "</td><td>"+year+
        "</td><td>"+date_elm_html+
        "</td><td>"+time_elm1_html+
@@ -272,20 +275,20 @@ $(document).ready(function(){
         
         $.ajax({
             type: "POST",
-            url: "/subjectHandler",
+            url: "/subject_handeled_info",
 
             data: JSON.stringify({"collegeCode":college_code,"userID":userid}),
             success: function(msg){
                 console.log(msg)    
                 clean_page_content()
-                update_attendenc_display(temp_data);
+                update_attendenc_display(msg);
 
 
             },
             error:function(msg){
                 console.log("response error")
                 clean_page_content()
-                update_attendenc_display(temp_data);
+                // update_attendenc_display(temp_data);
             },
             dataType: "json"
           });

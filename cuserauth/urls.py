@@ -11,6 +11,6 @@ urlpatterns = [
     path('exelFileReader',views.excelReader, name= 'excelReader'),
     path('passwordChange',views.change_password,name='change Password'),
     path('excel_upload', views2.excel_upload, name = 'Excel'),
-    path('attendenceButtonClick', views2._attendenceButtonClick, name = 'Attandence'),
+    path('subject_handeled_info', views2.subject_handeled_info, name = 'Attandence'),
     path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections')
 ]
