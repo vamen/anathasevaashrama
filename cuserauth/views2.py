@@ -24,8 +24,6 @@ def _sectionHandler(request, id):
     #subCode = body['subCode']
     sec = Incharge.objects.get(id = id)
     studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
-
-    print(sec)
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
 
@@ -39,10 +37,12 @@ def _openAttendance(request):
         date = body["Date"]
         print('Section')
         sec = Incharge.objects.get(id = int(ID))
-        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+
+        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
         print("asdsa",len(studentList))
         if(len(studentList) == 0):
             raise Http404("Please Contact Pricipal for assigning classes")
+
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps(studentList),safe=False)
@@ -93,7 +93,11 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 89d19cff8f25b83c142dc7c24c5f36ea1d6dc4fa
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 
