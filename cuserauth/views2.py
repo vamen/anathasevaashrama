@@ -36,9 +36,13 @@ def _openAttendance(request):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         ID = body["id"]
+        date = body["Date"]
         print('Section')
         sec = Incharge.objects.get(id = int(ID))
         studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+        print("asdsa",len(studentList))
+        if(len(studentList) == 0):
+            raise Http404("Please Contact Pricipal for assigning classes")
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps(studentList),safe=False)
@@ -51,7 +55,7 @@ def subject_handeled_info(request):
         body = json.loads(body_unicode)
         collegeCode=body["collegeCode"]
         userid = body["userID"]
-
+        
         subjectHandled = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(subCode = F('subjectFK__subjectCode'),subName = F('subjectFK__subjectName')).values('subCode', 'subName').distinct())
         
         listOfSubs = []
@@ -63,6 +67,8 @@ def subject_handeled_info(request):
             listOfSubs.append(dataAdd)
             #lister.update
         print(listOfSubs)
+        if(len(listOfSubs) == 0):
+            raise JsonResponse("Please Contact Pricipal for assigning classes")
         return JsonResponse(listOfSubs,safe=False)
 
 def _studentUnderSub(request):
@@ -87,6 +93,7 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
+
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 
