@@ -1,3 +1,116 @@
+function update_attendance_modal(id,data,info){
+    data=JSON.parse(data)
+    subCode=info["subCode"]
+    secName=info["secName"]
+    date=info["Date"]
+    from=info["From"]
+    to=info["To"]
+
+    console.log($("#"+subCode).text())
+    subName=$("#"+subCode).text().split("|")[1]
+
+    console.log(data)
+    modal=$("#"+id).modal('show')
+    modal.find(".modal-title").text("Mark attendance | "+subName+" ( Section : "+secName+")");
+    modal_body=modal.find(".modal-body")
+    table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>"
+    for(i=0;i<data.length;i++){
+        table+="<tr><th>"+data[i]["studentID"]+"</th><th>"+data[i]["studentName"]+"</th><th><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+data[i]["studentID"]+"\"/></th></tr>"
+    }
+   table+="</tbody></table>";  
+   modal_body.empty()
+   modal_body.append("<span>date : "+date+" </span>")
+   modal_body.append("<span>From : "+from+" </span>")
+   modal_body.append("<span>To : "+to+" </span>") 
+   modal_body.append(table)
+    
+    $("#mark-all").click(function(e){
+        
+        checkboxes = document.getElementsByName('mark');
+        
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = this.checked;
+        }
+
+
+    });
+
+    $(".mark").change(function(){
+
+        if(false == $(this).prop("checked")){ //if this item is unchecked
+            $("#mark-all").prop('checked', false); //change "select all" checked status to false
+        }
+        //check "select all" if all checkbox items are checked
+        
+        if ($('.mark:checked').length == $('.mark').length ){
+            
+            $("#mark-all").prop('checked', true)
+            
+        }
+
+    });
+
+    $("#modal-submit-data").click(function(){
+        
+        console.log("cliecked on submit")       
+        var mark_data=[]
+
+        if ($('.mark:checked').length==0){
+            status=0
+        }else if(true==$("#mark-all").prop("checked")){
+
+            status=2    
+        }else{
+            
+            status=1
+            console.log($('.mark:checked'))
+            checkboxes = document.getElementsByName('mark');
+            
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                if(checkboxes[i].checked == true){
+                    mark_data.push(checkboxes[i].id)
+                } 
+            }
+        }
+        
+
+        
+        post_data={
+
+            "status":status,
+            "subCode":info["subCode"],
+            "id":info["id"],
+            "absenties":mark_data                
+        }
+
+        
+        // console.log(post_data)
+
+        $.ajax({
+                
+            type: "POST",
+                url: "/mark_attendance",
+    
+                data: JSON.stringify(post_data),
+                success: function(msg){
+                //    console.log(msg);   
+                //    console.log($("#model1").find("h4.model-title"));
+                   console.log(msg)
+                    
+
+                },
+                error:function(msg){
+                    console.log("response error")
+                },
+                dataType: "json"
+
+            // 
+        });
+
+    });
+}
+
+
 
 function register_attendance_table_click(datatable){
     datatable.on('click','tbody td button',function(){
@@ -20,20 +133,22 @@ function register_attendance_table_click(datatable){
             to=$("#timepick2"+subCode+secName+year).find("input").val();
             console.log("date :"+"#datepick"+subCode+secName+year)
             console.log(date)
-            if(data==""||from==""||to==""){
+            if(date==""||from==""||to==""){
                     alert("please provide valid date or time")
                     return;
             }
             college_code=Cookies.get('collegeCode');
             userid=Cookies.get('userid');
+            post_data={"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}
             $.ajax({
                 type: "POST",
                 url: "/openAttendance",
     
-                data: JSON.stringify({"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}),
+                data: JSON.stringify(post_data),
                 success: function(msg){
-                    
-                   console.log(msg)    
+                //    console.log(msg);   
+                //    console.log($("#model1").find("h4.model-title"));
+                   update_attendance_modal("modal1",msg,post_data);
                 },
                 error:function(msg){
                     console.log("response error")
@@ -113,6 +228,8 @@ function clean_page_content(){
     $("#content-header").text("")
 }
 
+
+
 function  update_attendenc_display(temp_data){
     
     
@@ -138,7 +255,7 @@ function  update_attendenc_display(temp_data){
         $("#content-body").append(attendance)
         
         
-        table="<table id=\"table-"+subCode+"\"><thead><tr><th>Section </th><th>Year </th>\
+        table="<table class=\"table table-stripped\" id=\"table-"+subCode+"\"><thead><tr><th>Section </th><th>Year </th>\
         <th>Date</th><th>From</th><th>to</th><th>Mark</th></tr></thead><tbody>";
 
         
@@ -174,7 +291,8 @@ function  update_attendenc_display(temp_data){
 
 }
 
-    
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -321,3 +439,4 @@ $(document).ready(function(){
 
 
 })
+

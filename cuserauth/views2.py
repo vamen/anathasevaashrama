@@ -24,8 +24,6 @@ def _sectionHandler(request, id):
     #subCode = body['subCode']
     sec = Incharge.objects.get(id = id)
     studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
-
-    print(sec)
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
 
@@ -38,7 +36,7 @@ def _openAttendance(request):
         ID = body["id"]
         print('Section')
         sec = Incharge.objects.get(id = int(ID))
-        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
+        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps(studentList),safe=False)
@@ -87,6 +85,7 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
+    
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 
