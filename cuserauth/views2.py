@@ -1,11 +1,11 @@
 from django.shortcuts import render,render_to_response
 from django.template import RequestContext
 from django.http import JsonResponse
-from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course
+from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
-
+import datetime
 
 db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 
@@ -34,18 +34,35 @@ def _openAttendance(request):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         ID = body["id"]
-        date = body["Date"]
+        date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
+        sesFrom = body["From"]
+        sesTo = body["To"]
         print('Section')
-        sec = Incharge.objects.get(id = int(ID))
-
-        studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
-        print("asdsa",len(studentList))
+        lecIncharge = Incharge.objects.get(id = int(ID))
+        #need to add old data
+        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionto = sesTo, sessionDate = date).annotate(studentID=F("studentFK_id")).values("studentID"))
+        print("attUpdate",attUpdate)
+        studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
         if(len(studentList) == 0):
             raise Http404("Please Contact Pricipal for assigning classes")
+        if len(attUpdate) == 0:
+            print("studentList",studentList)
+            #return JsonResponse(json.dumps(studentList),safe=False)
+            return JsonResponse(json.dumps({"old":0,"studentList":studentList}),safe=False)    
+        
+        oldStatusEntry = []
+        for student in studentList:
+            if student.studentID in attUpdate:
+                oldStatusEntry.append(1)
+            else:
+                oldStatusEntry.append(0)
+
+        print("asdsa",studentList, "asdas",oldStatusEntry)
+        
 
         #print(sec)
         #print(studentList)
-        return JsonResponse(json.dumps(studentList),safe=False)
+        return JsonResponse(json.dumps({"old":1,"studentList":studentList, "StautsField":oldStatusEntry}),safe=False)
 
 @csrf_exempt
 def subject_handeled_info(request):    
@@ -93,11 +110,40 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
-<<<<<<< HEAD
+@csrf_exempt
+def _markingAttendance(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
 
-=======
+    status = int(body["status"])
+    #make code more efficent by search the id and delete
+    if status == 0:
+        return JsonResponse({'status':'sucess'})
+    elif status == 2:
+        #incID = body["id"]
+        #subCode = body["subCode"]
+        #sessionFrom = body["sessionfrom"]
+        #sessionTo = body["sessionto"]
+        #Date = body["date"]
+
+        #lecIncharge = Incharge.objects.get(id = int(incID))
+        #attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date)
+        #print(attUpdate)
+        #attUpdate.delete()
+        pass
+    else:
+        incID = body["id"]
+        subCode = body["subCode"]
+        sessionFrom = body["sessionfrom"]
+        sessionTo = body["sessionto"]
+        Date = datetime.datetime.strptime(body["date"],"%d/%m/%Y").strftime("%Y-%m-%d")
+        lecIncharge = Incharge.objects.get(id = int(incID))
+        attendies = body["absenties"]
+        for stuID in attendies:
+            stu = Students.objects.get(studentInfoFK_id = int(stuID))
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = "10:00", sessionto = "10:40", sessionDate = Date, studentstatus = 0)
+            attInsert.save()
     
->>>>>>> 89d19cff8f25b83c142dc7c24c5f36ea1d6dc4fa
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 

@@ -13,6 +13,7 @@ urlpatterns = [
     path('excel_upload', views2.excel_upload, name = 'Excel'),
     path('subject_handeled_info', views2.subject_handeled_info, name = 'Attandence'),
     path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections'),
-    path('openAttendance', views2._openAttendance, name = 'openAttendance')
+    path('openAttendance', views2._openAttendance, name = 'openAttendance'),
+    path('mark_attendance', views2._markingAttendance, name = 'markAttendance')
     #path('sectionHandler/<int:id>/', views2._sectionHandler, name = 'sections')
 ]

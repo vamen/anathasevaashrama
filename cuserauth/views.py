@@ -10,7 +10,7 @@ from django.utils import timezone
 from .utils import authentication_utils 
 from .utils.logger_utils import init_logger
 from .authentication import *
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 import pandas
 from django.apps import apps
 from .utils.modelValidation import *
@@ -84,10 +84,23 @@ def excelReader(request):
 
 @check_login("page")
 def _dashboard(request, collegeCode, userid):
-    collegeName = College.objects.get(collegeCode = collegeCode)
-    lecName = Lecturers.objects.get(id = userid)
+    try:
+        collegeName = College.objects.get(collegeCode = collegeCode)
+        lecName = Lecturers.objects.get(id = userid)
+    except ObjectDoesNotExist:
+        HttpResponse("Please Contact pricipal \n lecturer not registered", status= 404)
     print(type(lecName.LecturerName))
     print("dashboard")
+    from django.core import serializers
+    #c= Students._meta.get_field_by_name()
+    #print([f.name for f in Students._meta.get_fields(include_hidden=False)])
+    student = [f.name for f in StudentInfo._meta.local_fields]
+    #print(i.name for i in student)
+    #print(Students._meta.local_fields)
+    #object_list = serializers.serialize("python", )
+    #for object in object_list:
+    #    for field_name, field_value in object['fields'].items():
+    #        print (field_name, field_value)
     #sec = list(Incharge.objects.filter(lecturerFK__collegeFK = collegeCode,lecturerFK_id = userid).annotate(lecName = F('lecturerFK__LecturerName'),subCode = F('subjectFK__subjectName'), subName = F('subjectFK_id'),subYear = F('subjectFK__subjectYear'),secName = F('sectionFK__sectionName'), year = F('sectionFK__year')).values('lecName','subCode','subName','subYear','secName', 'year'))
     #print(sec)
     #lName = F('lecturerFK__LecturerName'), secName = F('sectionFK__sectionName'), year = F('sectionFK__year'),
@@ -98,7 +111,6 @@ def _dashboard(request, collegeCode, userid):
         
     var = {"college_name":collegeName.collegeName,"lecName":lecName.LecturerName}
     return render_to_response("dash.html", var, RequestContext(request))
-
 
 @csrf_exempt
 def login(request):

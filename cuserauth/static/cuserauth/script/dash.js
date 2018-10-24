@@ -84,7 +84,7 @@ function update_attendance_modal(id,data,info){
         }
 
         
-        // console.log(post_data)
+         console.log(post_data)
 
         $.ajax({
                 
@@ -272,7 +272,7 @@ function  update_attendenc_display(temp_data){
             
             $(".datepick").each(function(){
                 console.log("dedoed")
-                $(this).datetimepicker({format: 'DD-MM-YY'});
+                $(this).datetimepicker({format: 'DD/MM/YYYY'});
             });
 
             $(".timepick").each(function(){

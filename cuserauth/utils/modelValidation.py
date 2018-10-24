@@ -1,11 +1,24 @@
-StudentHeader = ['slno', 'rollno' , 'name', 'mother name', 'father name', 'email', 'father mail', 'phone', 'father phone']
+from ..models import StudentInfo, Students
+#StudentHeader = ['slno', 'rollno' , 'name', 'mother name', 'father name', 'email', 'father mail', 'phone', 'father phone']
+StudentHeader = ['StudentRollNo', 'studentName', 'motherName', 'fatherName', 'email', 'fatherEmail', 'studentPhone', 'fatherPhone']
 def check_students(excel, Course):
-    print(excel.columns.values.tolist())
-    print(StudentHeader)
-    if(excel.columns.values.tolist() == StudentHeader):
+    header = [f.get_internal_type() for f in Students._meta.local_fields]
+    stuInfoName = [f.name for f in StudentInfo._meta.local_fields]    
+    stuName = [f.name for f in Students._meta.local_fields] 
+    stuName = stuInfoName + stuName[1:]
+    print(stuName)
+    print(header)
+    got_header = excel.columns.values.tolist()
+    from django.apps import apps
+    #Invoice = apps.get_model(app_label="cuserauth", model_name=stuName[0])
+    c = getattr(StudentInfo, stuName[0])
+    print(c.__init__(blank))
+    if(got_header == stuInfoName):
+
         print("sucess")
     else:
-        return
+        print("failed")
+    
 def check_cources(excel_File, model):
     if list(excel_File.dtypes) == ["int64", "O","O"]:
         print("sucess")

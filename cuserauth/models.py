@@ -109,6 +109,19 @@ class Students(models.Model):
 
     def  __str__(self):
         return self.studentInfoFK.studentName
+    '''
+    def save(self, **kwargs):
+        try:
+            self.objects.get(field_a=self.field_a, field_b=self.field_b, validated=True)
+
+            # this wont run if the previous line throw an exception
+            raise ValidationError(
+                "field_a and field_b must be unique if validated=True"
+            ) 
+
+        except self.__class__.DoesNotExist:  # does not catch the ValidationError 
+            super(MyModel, self).save(**kwargs)  # everything cool
+    '''
 
 class Attendence(models.Model):
     #Forign Key
@@ -122,7 +135,7 @@ class Attendence(models.Model):
     studentstatus=models.IntegerField()
     #classes
     def  __str__(self):
-        return self.studentFK.studentName
+        return self.studentFK.studentInfoFK.studentName
 
 class Lecturers(models.Model):
 
@@ -150,3 +163,14 @@ class Incharge(models.Model):
 
     def  __str__(self):
         return self.lecturerFK.LecturerName
+'''
+def save(self, *args, **kwargs):
+    # ... other things not important here
+    self.email = self.email.lower().strip() # Hopefully reduces junk to ""
+    if self.email != "": # If it's not blank
+        if not email_re.match(self.email) # If it's not an email address
+            raise ValidationError(u'%s is not an email address, dummy!' % self.email)
+    if self.email == "":
+        self.email = None
+    super(Contact, self).save(*args, **kwargs)
+'''
