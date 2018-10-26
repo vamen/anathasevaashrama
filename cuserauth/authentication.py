@@ -7,7 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 logger=init_logger()
 
-
 def check_login(returntype):
     def outter_wrap(function):
         def wrap(request,*args,**kwargs):

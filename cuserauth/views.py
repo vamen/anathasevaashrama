@@ -1,7 +1,7 @@
 from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token, ensure_csrf_cookie, csrf_protect
 from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course
 from django.db.models import F
 from django.http import JsonResponse
@@ -45,6 +45,7 @@ def logout(request):
     response.delete_cookie("userid")
     response.delete_cookie("token")
     response.delete_cookie("collegeCode")
+    #response.delete_cookie("csrftoken")
     return response
 
 def excelDataValidation(option, excel):
@@ -54,7 +55,6 @@ def excelDataValidation(option, excel):
     if opt == 1:
         check_students(excel, Students)
 
-@csrf_exempt
 def excelReader(request):
     ex = request.POST['excel_type']
     print(ex)
@@ -80,9 +80,7 @@ def excelReader(request):
     #    excel_data.append(row_data)
     
     return HttpResponseRedirect('/')
- 
-
-@check_login("page")
+@csrf_protect
 def _dashboard(request, collegeCode, userid):
     try:
         collegeName = College.objects.get(collegeCode = collegeCode)
@@ -110,34 +108,42 @@ def _dashboard(request, collegeCode, userid):
     #    print("Subjects Taken",sub)
         
     var = {"college_name":collegeName.collegeName,"lecName":lecName.LecturerName}
-    return render_to_response("dash.html", var, RequestContext(request))
+    return render(request, "dash.html", var)
 
 @csrf_exempt
 def login(request):
-    
-    if request.method == 'POST':
+    @ensure_csrf_cookie
+    @csrf_protect
+    def authenticate(request):
         body_unicode = request.body.decode('utf-8') 
         body = json.loads(body_unicode)
         collegeCode=body["college"]
         user=body["username"]
         password=body["password"]
         print(collegeCode, user, password)
-        
+        print("in")
         #check for college
         return JsonResponse(authenticate_user(collegeCode,user,password)) 
-               
+    
+    def loadPage(request):           
+        print("load")
+        return render('index.html')
+    if request.method == 'POST':
+        return authenticate(request)
     else:
-        HttpResponseRedirect("/")
+        return loadPage(request)
 
 # Temperory code
+#@ensure_csrf_cookie
 @csrf_exempt
 def change_password(request):
-    if request.method=='GET':
-        return render_to_response('temp.html',{"message":""})
-    else:
+    @ensure_csrf_cookie
+    @csrf_protect
+    def postReq(request):
         print("got post request")
         username=request.POST['username']
         password=request.POST['password']
+        
         # replace by argon or sha etc ..
         hash_password,salt=authentication_utils.make_password(password)
         obj=Lecturers.objects.filter(LecturerUsername=username)
@@ -147,4 +153,12 @@ def change_password(request):
             obj.update(LecturerPassword=str(hash_password),salt=salt,LastPasswordChange=timezone.now())
             return render_to_response("temp.html",{"message":"update successfull"})
         return render_to_response("temp.html",{"message":"no user by this user name : "+username},RequestContext(request))
+
+    def getReq(request):
+        return render(request,'temp.html')
+
+    if request.method=='POST':
+        return postReq(request)
+    else:
+         return getReq(request)
 

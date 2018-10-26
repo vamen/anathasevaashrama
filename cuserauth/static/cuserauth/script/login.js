@@ -1,19 +1,51 @@
 $(document).ready(function(){
 
     // jQuery methods go here...
-
-    
-
-    alert("alert")
     $("#login-submit").click(function(){
             username=$("#username").val()
             college=$("#coll_drop_down").val()         
             password=$("#password").val()
-            alert(username+":::"+college)
+            $("#u").value = "asd"
+            var csrftoken = Cookies.get('csrftoken');
+            
+            if(college == null)
+            {
+                alert("Select Option")
+                console.log("error")
+                return
+            }   
+            if(username.length == 0)
+            {
+
+                alert("Enter Username")
+                console.log("error")
+                return
+            }
+            if(password.length == 0){
+                alert("Enter Password")
+                return
+            }
+            console.log(username.length)
+            console.log(window.CSRF_TOKEN) 
+            //alert(username+":::"+college)
+           function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            
+            });
             $.ajax({
                 type: "POST",
                 url: "/login",
-                data: JSON.stringify({"username":username,"college":college,"password":password}),
+                data: JSON.stringify({"username":username,"college":college,"password":password, csrfmiddlewaretoken: window.CSRF_TOKEN}),
+                
                 success: function(msg){
                     
                     if(msg.status == 0){
@@ -31,7 +63,7 @@ $(document).ready(function(){
 
                     }
                     else{
-                        alert("error in login data")
+                        alert("Invalid Username or password")
                     }
                 },
                 error:function(msg){

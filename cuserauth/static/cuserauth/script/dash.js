@@ -1,3 +1,7 @@
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
 function update_attendance_modal(id,data,info){
     data=JSON.parse(data)
     subCode=info["subCode"]
@@ -85,7 +89,15 @@ function update_attendance_modal(id,data,info){
 
         
          console.log(post_data)
-
+        var csrftoken = Cookies.get('csrftoken');
+        $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            
+            });
         $.ajax({
                 
             type: "POST",
@@ -140,6 +152,15 @@ function register_attendance_table_click(datatable){
             college_code=Cookies.get('collegeCode');
             userid=Cookies.get('userid');
             post_data={"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}
+            var csrftoken = Cookies.get('csrftoken');         
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            
+            });
             $.ajax({
                 type: "POST",
                 url: "/openAttendance",
@@ -388,8 +409,16 @@ $(document).ready(function(){
     
 
     $("#attendance").click(function(){
+        var csrftoken = Cookies.get('csrftoken');
         
-        
+        $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            
+            });
         
         $.ajax({
             type: "POST",

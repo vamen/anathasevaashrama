@@ -3,16 +3,15 @@ from django.template import RequestContext
 from django.http import JsonResponse
 from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence
 import json
-from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
 import datetime
+from django.views.decorators.csrf import requires_csrf_token, ensure_csrf_cookie, csrf_protect
 
 db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 
 def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
 
-@csrf_exempt
 def _sectionHandler(request, id):
     #if request.method == 'POST':
     print('Section')
@@ -26,8 +25,7 @@ def _sectionHandler(request, id):
     studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
-
-@csrf_exempt
+@csrf_protect
 def _openAttendance(request):
     if request.method == 'POST':
         print("_openAttendence")
@@ -63,8 +61,7 @@ def _openAttendance(request):
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps({"old":1,"studentList":studentList, "StautsField":oldStatusEntry}),safe=False)
-
-@csrf_exempt
+@csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
         print("_openAttendence")
@@ -87,7 +84,7 @@ def subject_handeled_info(request):
         if(len(listOfSubs) == 0):
             raise JsonResponse("Please Contact Pricipal for assigning classes")
         return JsonResponse(listOfSubs,safe=False)
-
+@csrf_protect
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -110,7 +107,7 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
-@csrf_exempt
+@csrf_protect
 def _markingAttendance(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -143,7 +140,7 @@ def _markingAttendance(request):
             stu = Students.objects.get(studentInfoFK_id = int(stuID))
             attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = "10:00", sessionto = "10:40", sessionDate = Date, studentstatus = 0)
             attInsert.save()
-    
+@csrf_protect    
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 
