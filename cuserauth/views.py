@@ -80,13 +80,14 @@ def excelReader(request):
     #    excel_data.append(row_data)
     
     return HttpResponseRedirect('/')
+
 @csrf_protect
 def _dashboard(request, collegeCode, userid):
     try:
         collegeName = College.objects.get(collegeCode = collegeCode)
         lecName = Lecturers.objects.get(id = userid)
     except ObjectDoesNotExist:
-        HttpResponse("Please Contact pricipal \n lecturer not registered", status= 404)
+        return HttpResponse("Please Contact principal \n lecturer not registered", status= 404)
     print(type(lecName.LecturerName))
     print("dashboard")
     from django.core import serializers
