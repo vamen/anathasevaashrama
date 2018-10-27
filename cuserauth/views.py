@@ -124,10 +124,11 @@ def login(request):
         print("in")
         #check for college
         return JsonResponse(authenticate_user(collegeCode,user,password)) 
-    
+
+    @ensure_csrf_cookie
     def loadPage(request):           
         print("load")
-        return render('index.html')
+        return render(request,'index.html')
     if request.method == 'POST':
         return authenticate(request)
     else:
