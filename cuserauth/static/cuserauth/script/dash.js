@@ -9,19 +9,30 @@ function update_attendance_modal(id,data,info){
     date=info["Date"]
     from=info["From"]
     to=info["To"]
+    
+    student_list=data["studentList"]
+    is_old=data["old"]?true:false
 
-    console.log($("#"+subCode).text())
+    
+    
+    console.log(is_old)
+    
     subName=$("#"+subCode).text().split("|")[1]
 
-    console.log(data)
+ 
     modal=$("#"+id).modal('show')
     modal.find(".modal-title").text("Mark attendance | "+subName+" ( Section : "+secName+")");
     modal_body=modal.find(".modal-body")
     table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>"
-    for(i=0;i<data.length;i++){
-        table+="<tr><th>"+data[i]["studentID"]+"</th><th>"+data[i]["studentName"]+"</th><th><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+data[i]["studentID"]+"\"/></th></tr>"
+    for(i=0;i<student_list.length;i++){
+        console.log((is_old?data.status[i]?" checked":" ":"not checked"))
+        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?data.status[i]?" checked":" ":" ")+"/></td></tr>"
+        
+
+        
     }
    table+="</tbody></table>";  
+   console.log(table)
    modal_body.empty()
    modal_body.append("<span>date : "+date+" </span>")
    modal_body.append("<span>From : "+from+" </span>")
@@ -105,12 +116,17 @@ function update_attendance_modal(id,data,info){
     
                 data: JSON.stringify(post_data),
                 success: function(msg){
-                //    console.log(msg);   
-                //    console.log($("#model1").find("h4.model-title"));
-                   console.log(msg)
+
+                   console.log(msg) 
+                   modal=$("#"+id)
+                   modal.find(".modal-title").text()
+                   modal.find(".modal-body").empty()
+                   modal.modal('hide')
                 },
                 error:function(msg){
+                    
                     console.log("response error")
+                
                 },
                 dataType: "json"
 

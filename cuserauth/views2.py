@@ -61,6 +61,7 @@ def _openAttendance(request):
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps({"old":1,"studentList":studentList, "StautsField":oldStatusEntry}),safe=False)
+
 @csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
@@ -84,6 +85,8 @@ def subject_handeled_info(request):
         if(len(listOfSubs) == 0):
             raise JsonResponse("Please Contact Pricipal for assigning classes")
         return JsonResponse(listOfSubs,safe=False)
+
+
 @csrf_protect
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
@@ -107,15 +110,18 @@ def _studentUnderSub(request):
     #students = list(Students.objects.filter(collegeFK_id = collegeCode,courseFK_id = subjectObj.courseFK).all())
     print(students)
     return JsonResponse({'students':students})
+
+
 @csrf_protect
 def _markingAttendance(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
     status = int(body["status"])
+    
     #make code more efficent by search the id and delete
     if status == 0:
-        return JsonResponse({'status':'sucess'})
+        return JsonResponse({'status':'success'})
     elif status == 2:
         #incID = body["id"]
         #subCode = body["subCode"]
