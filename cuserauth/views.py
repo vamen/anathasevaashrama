@@ -85,9 +85,10 @@ def excelReader(request):
 def _dashboard(request, collegeCode, userid):
     try:
         collegeName = College.objects.get(collegeCode = collegeCode)
-        lecName = Lecturers.objects.get(id = userid)
+        
     except ObjectDoesNotExist:
         return HttpResponse("Please Contact principal \n lecturer not registered", status= 404)
+    lecName = Lecturers.objects.get(id = int(userid))
     print(type(lecName.LecturerName))
     print("dashboard")
     from django.core import serializers
@@ -139,8 +140,7 @@ def login(request):
 #@ensure_csrf_cookie
 @csrf_exempt
 def change_password(request):
-    @ensure_csrf_cookie
-    @csrf_protect
+    #for now
     def postReq(request):
         print("got post request")
         username=request.POST['username']
