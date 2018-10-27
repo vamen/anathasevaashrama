@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block script %}
+<script type="text/javascript" src="{% static 'cuserauth/script/login.js' %}">
+</script>
+{% endblock %}
+{% block content %}
+<form action="exelFileReader" method="post" enctype="multipart/form-data">
+    <select name="excel_type" id="excel_type" class="custom-select form-control">
+        {% for tab in tables %}
+        <option value={{ tab.id }}>{{ tab.tables}}</option>
+        {% endfor %}
+    </select> 
+    <input type="file"
+           title="Upload excel file"
+           name="excel_file"
+           style="border: 1px solid black; padding: 5px;"
+           required="required"/>
+        <input type="submit"
+               value="Upload"
+               style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;"/>
+</form>
+{% endblock %}
+
