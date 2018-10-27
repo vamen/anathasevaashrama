@@ -108,8 +108,6 @@ function update_attendance_modal(id,data,info){
                 //    console.log(msg);   
                 //    console.log($("#model1").find("h4.model-title"));
                    console.log(msg)
-                    
-
                 },
                 error:function(msg){
                     console.log("response error")

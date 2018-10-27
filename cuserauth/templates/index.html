@@ -29,13 +29,16 @@
                                                         {% for id in ids %}
                                                             <option value={{ id.collegeCode }}>{{ id.collegeName}}</option>
                                                         {% endfor %}
-                                                </select>           
+                                                </select>     
+                                                <p id="Lerror" for="remember" style="display: none;">  Select School</p>
                                         </div>
                                         <div class="form-group">
                                             <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value=""/>
+                                            <p id="UNerror" for="remember" style="display: none;">  Username Required</p>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password"/>
+                                            <p id="Perror" for="remember" style="display: none;">  Password Required</p>
                                         </div>
                                         <div class="form-group text-center">
                                             <input type="checkbox" tabindex="3" class="" name="remember" id="remember">

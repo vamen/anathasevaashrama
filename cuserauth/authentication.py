@@ -62,5 +62,5 @@ def authenticate_user(collegeCode,user,password):
         
         
     logger.info(message)            
-    response_dict["message"] =message 
+    response_dict["message"] = message 
     return response_dict

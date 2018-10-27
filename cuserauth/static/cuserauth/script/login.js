@@ -2,6 +2,9 @@ $(document).ready(function(){
 
     // jQuery methods go here...
     $("#login-submit").click(function(){
+            $("#Lerror").hide()
+            $("#UNerror").hide()
+            $("#Perror").hide()
             username=$("#username").val()
             college=$("#coll_drop_down").val()         
             password=$("#password").val()
@@ -10,19 +13,21 @@ $(document).ready(function(){
             
             if(college == null)
             {
-                alert("Select Option")
-                console.log("error")
+                $("#Lerror").show()
+                //document.error.value = "Select Option";
+                //alert("Select Option")
                 return
             }   
             if(username.length == 0)
             {
-
-                alert("Enter Username")
-                console.log("error")
+                $("#UNerror").show()
+                //alert("Enter Username")
+                //console.log("error")
                 return
             }
             if(password.length == 0){
-                alert("Enter Password")
+                $("#Perror").show()
+                //alert("Enter Password")
                 return
             }
             console.log(username.length)
@@ -50,7 +55,7 @@ $(document).ready(function(){
                     
                     if(msg.status == 0){
                         console.log(msg)
-                        alert("redirecting page ...")
+                        //alert("redirecting page ...")
                         url="/dashboard/"+msg.collegeCode+"/"+parseInt(msg.userid)
                         $(location).attr('href',url)
                         
@@ -63,7 +68,9 @@ $(document).ready(function(){
 
                     }
                     else{
-                        alert("Invalid Username or password")
+                        $("#Perror").show()
+                        $("#Perror").text("Invalid Username or password")
+                        //alert("Invalid Username or password")
                     }
                 },
                 error:function(msg){

@@ -108,7 +108,7 @@ def _dashboard(request, collegeCode, userid):
     #    print("Subjects Taken",sub)
         
     var = {"college_name":collegeName.collegeName,"lecName":lecName.LecturerName}
-    return render(request, "dash.html", var)
+    return render(request,"dash.html", var)
 
 @csrf_exempt
 def login(request):
