@@ -34,7 +34,7 @@ def index(request):
 
     ids = list(College.objects.values('collegeCode','collegeName'))
     
-    response = render_to_response("index.html",{"college_name":"Login To Portel","ids":ids},RequestContext(request))
+    response = render_to_response("index.html",{"college_name":"Login To Portal","ids":ids},RequestContext(request))
     response.delete_cookie("userid")
     response.delete_cookie("token")
     response.delete_cookie("collegeCode")
