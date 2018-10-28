@@ -38,9 +38,9 @@ def _openAttendance(request):
         print('Section')
         lecIncharge = Incharge.objects.get(id = int(ID))
         #need to add old data
-        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionto = sesTo, sessionDate = date).annotate(studentID=F("studentFK_id")).values("studentID"))
+        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionto = sesTo, sessionDate = date).annotate(studentID=F("studentFK__studentInfoFK_id")).values_list("studentID", flat=True))
         print("attUpdate",attUpdate)
-        studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
+        studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName').order_by('studentName'))
         if(len(studentList) == 0):
             raise Http404("Please Contact Pricipal for assigning classes")
         if len(attUpdate) == 0:
@@ -48,19 +48,23 @@ def _openAttendance(request):
             #return JsonResponse(json.dumps(studentList),safe=False)
             return JsonResponse(json.dumps({"old":0,"studentList":studentList}),safe=False)    
         
-        oldStatusEntry = []
+        #oldStatusEntry = []
         for student in studentList:
-            if student.studentID in attUpdate:
-                oldStatusEntry.append(1)
-            else:
-                oldStatusEntry.append(0)
 
-        print("asdsa",studentList, "asdas",oldStatusEntry)
+            if student["studentID"] in attUpdate:
+                print(student["studentID"], attUpdate)
+                student["statusField"] = 1
+                #oldStatusEntry.append(1)
+            else:
+                student["statusField"] = 0
+                #oldStatusEntry.append(0)
+
+        print("asdsa",studentList)
         
 
         #print(sec)
         #print(studentList)
-        return JsonResponse(json.dumps({"old":1,"studentList":studentList, "StautsField":oldStatusEntry}),safe=False)
+        return JsonResponse(json.dumps({"old":1,"studentList":studentList}),safe=False)
 
 @csrf_protect
 def subject_handeled_info(request):    
@@ -137,15 +141,16 @@ def _markingAttendance(request):
     else:
         incID = body["id"]
         subCode = body["subCode"]
-        sessionFrom = body["sessionfrom"]
-        sessionTo = body["sessionto"]
-        Date = datetime.datetime.strptime(body["date"],"%d/%m/%Y").strftime("%Y-%m-%d")
+        sessionFrom = body["From"]
+        sessionTo = body["To"]
+        Date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
         lecIncharge = Incharge.objects.get(id = int(incID))
         attendies = body["absenties"]
         for stuID in attendies:
             stu = Students.objects.get(studentInfoFK_id = int(stuID))
-            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = "10:00", sessionto = "10:40", sessionDate = Date, studentstatus = 0)
-            attInsert.save()
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
+            #attInsert.save()
+    return JsonResponse({'success':'success'})
 @csrf_protect    
 def _studentUnderSub(request):
     if request.method == 'GET':
