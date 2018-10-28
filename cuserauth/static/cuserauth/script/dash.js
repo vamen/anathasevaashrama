@@ -95,7 +95,10 @@ function update_attendance_modal(id,data,info){
             "status":status,
             "subCode":info["subCode"],
             "id":info["id"],
-            "absenties":mark_data                
+            "absenties":mark_data,
+            "Date":date,
+            "From":from,
+            "To":to                
         }
 
         
@@ -124,6 +127,7 @@ function update_attendance_modal(id,data,info){
                    modal.modal('hide')
                 },
                 error:function(msg){
+                    
                     
                     console.log("response error")
                 
