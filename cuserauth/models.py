@@ -49,7 +49,7 @@ class Section(models.Model):
         unique_together = ('collegeFK','courseFK','sectionName', 'year',)
 
     def  __str__(self):
-        return self.sectionName+str(self.year)
+        return str(self.sectionName)+str(self.year)
 
 class Offerd_course(models.Model):
     #Forign Key

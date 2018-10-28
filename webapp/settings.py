@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'cuserauth'
 ]
 
@@ -80,7 +81,7 @@ DATABASES = {
         'ENGINE':  'django.db.backends.postgresql_psycopg2',
         'NAME': 'college_data',
         'USER':'college_admin',
-        'PASSWORD':'geetha',
+        'PASSWORD':'root@1234',
         'HOST':'localhost'
     }
 }
