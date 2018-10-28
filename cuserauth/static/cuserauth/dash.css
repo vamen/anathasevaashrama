@@ -23,7 +23,7 @@
 .content-header{
     margin: 0%;
     width: 100%;
-    background: #4CAF50;
+    background: rgb(255,255,255); /*changed*/
     color: white;
     padding-left: 15px;
     font-weight: bold;
@@ -77,15 +77,13 @@
 .sidebar-wrapper {
     z-index: 100;
     /* left: 220px; */
-    color: #999999;
+    color:rgb(192, 204, 212); /*changed*/
     width: 20%;
     height: 100%;
     /* margin-left: -220px; */
     overflow-y: auto;
     overflow-x: hidden;
-    background: #202020;
-
-
+    background-color:#5c606d; /*changed*/
 }
 
 .page-content-wrapper {
@@ -102,6 +100,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
+	background-color: #5c606d; /*changed*/
   }
   
   .sidebar-nav li {
@@ -118,7 +117,7 @@
   .sidebar-nav li >a:hover {
     text-decoration: none;
     color: #fff;
-    background:  rgb(0, 0, 0);
+    background: rgb(242, 195, 0);
   }
   
 
@@ -169,8 +168,8 @@
 
     
 .sidebar-selected-item{
-    color: #fff !important;
-    background:#4CAF50 !important;
+    color:white !important;  /*changed*/
+    background: :rgb(242, 195, 0)!important; /*changed*/
 
     
   }
