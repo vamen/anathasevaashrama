@@ -1,22 +1,35 @@
 .jambo-style{
-
-    background-color: rgb(255, 255, 255) !important;
-    height: 10%;
+    background-color: rgb(72,77,92) !important; /*dark grey*/
+	/*background-color:rgb(71,64,63); */
+    height: 15%;
     padding: 0%;
     text-align: center;
 }
 
 .heading{
-    font-family:  Helvetica, sans-serif;
+    /*font-family:  Helvetica, sans-serif;*/
+	font-family: Oswald, sans-serif;
+	text-transform: uppercase;
+	color:rgb(242, 195, 0); /*yellow*/
+	font-size: 30px;
+	text-align:center;
+
+}
+.bodycustom{
+	background-color:rgb(110,116,135); /*light grey*/
+	font-family:Cardo,serif;
 
 }
 
 .sub-heading{
     font-family:  Helvetica, sans-serif;
     font-size: 20px;
+	color:rgb(242, 195, 0); /*yellow*/
 }
 
 
 .sub-text{
-    font-family: monospace;
+    font-family:Cardo, serif;
+	color:rgb(192, 204, 212); /*text light grey*/
+	font-size:15px;
 }
