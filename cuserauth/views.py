@@ -2,7 +2,7 @@ from django.shortcuts import render,render_to_response
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt, requires_csrf_token, ensure_csrf_cookie, csrf_protect
-from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course
+from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, collage_meta
 from django.db.models import F
 from django.http import JsonResponse
 import json
@@ -91,10 +91,9 @@ def _dashboard(request, collegeCode, userid):
     lecName = Lecturers.objects.get(id = int(userid))
     print(type(lecName.LecturerName))
     print("dashboard")
-    from django.core import serializers
     #c= Students._meta.get_field_by_name()
     #print([f.name for f in Students._meta.get_fields(include_hidden=False)])
-    student = [f.name for f in StudentInfo._meta.local_fields]
+    #student = [f.name for f in StudentInfo._meta.local_fields]
     #print(i.name for i in student)
     #print(Students._meta.local_fields)
     #object_list = serializers.serialize("python", )
@@ -108,8 +107,9 @@ def _dashboard(request, collegeCode, userid):
     #for sub in sec:
     #    #sub_names = list(Subjects.objects.filter(id = sub).values_list('subject_name', flat = True))
     #    print("Subjects Taken",sub)
-        
-    var = {"college_name":collegeName.collegeName,"lecName":lecName.LecturerName}
+    timmings = list(collage_meta.objects.filter(collegefk=collegeCode, isBreak=False).values('id','timeStart', 'timeEnd').order_by('timeStart'))    
+    print(timmings)
+    var = {"college_name":collegeName.collegeName,"lecName":lecName.LecturerName, 'timmings':timmings}
     return render(request,"dash.html", var)
 
 @csrf_exempt

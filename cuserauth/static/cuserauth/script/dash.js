@@ -26,7 +26,7 @@ function update_attendance_modal(id,data,info){
     table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>"
     for(i=0;i<student_list.length;i++){
         console.log((is_old?data.status[i]?" checked":" ":"not checked"))
-        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?data.status[i]?" checked":" ":" ")+"/></td></tr>"
+        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?student_list[i].statusField?" checked":" ":" ")+"/></td></tr>"
         
 
         
@@ -143,6 +143,19 @@ function update_attendance_modal(id,data,info){
 
 
 function register_attendance_table_click(datatable){
+    /*datatable.on("change","timeS502A2", function(){
+            alert("")
+            //var sub=datatable.table().node().id.split("-")[1]
+            
+            /*subCode=datatable.table().node().id.split("-")[1]
+            var data=datatable.row($(this).closest('tr')).data()
+            var id=datatable.row($(this).closest('tr')).id().split("-")[1]
+            
+            secName=data[0]
+            year=data[1]
+        //$("#timeE").selectedIndex = $("#timeS").val()
+        }
+    );*/
     datatable.on('click','tbody td button',function(){
             // console.log("button click");
             // console.log(datatable.id)
@@ -153,17 +166,19 @@ function register_attendance_table_click(datatable){
             subCode=datatable.table().node().id.split("-")[1]
             var data=datatable.row($(this).closest('tr')).data()
             var id=datatable.row($(this).closest('tr')).id().split("-")[1]
+
             // var idx = datatable.cell('.selected', 0).index();
             // var data = datatable.row( idx.row ).data();
             secName=data[0]
             year=data[1]
             
             date=$("#datepick"+subCode+secName+year).find("input").val();
-            from=$("#timepick1"+subCode+secName+year).find("input").val();
-            to=$("#timepick2"+subCode+secName+year).find("input").val();
+            from=$("#timeS"+subCode+secName+year).val();
+            to=$("#timeE"+subCode+secName+year).val();
             console.log("date :"+"#datepick"+subCode+secName+year)
-            console.log(date)
-            if(date==""||from==""||to==""){
+            console.log(from)
+            console.log(to)
+            if(date==""||from==null||to==null){
                     alert("please provide valid date or time")
                     return;
             }
@@ -198,14 +213,15 @@ function register_attendance_table_click(datatable){
 
     });
 }
-
+function add(){
+alert("finally")}
 function fill_data_table(subCode,data){
 
     console.log("filling row")
     console.log(data)
     date_elm=$("#datepicker").clone()
-    time_elm1=$("#timepicker").clone()
-    time_elm2=$("#timepicker").clone()
+    time_elm1=$("#timeS").clone()
+    time_elm2=$("#timeE").clone()
     
 
 
@@ -215,8 +231,8 @@ function fill_data_table(subCode,data){
     
     
     data_elm=date_elm.addClass("datepick");
-    time_elm1=time_elm1.addClass("timepick");
-    time_elm2=time_elm2.addClass("timepick");
+    //time_elm1=time_elm1.addClass("timepick");
+    //time_elm2=time_elm2.addClass("timepick");
 
 
     
@@ -232,14 +248,15 @@ function fill_data_table(subCode,data){
         secName=data[j]["secName"]
         year=data[j]["year"]
         data_elm=date_elm.attr("id","datepick"+subCode+secName+year);
-        time_elm1=time_elm1.attr("id","timepick1"+subCode+secName+year);
-        time_elm2=time_elm2.attr("id","timepick2"+subCode+secName+year);
-   
+        time_elm1=time_elm1.attr("id","timeS"+subCode+secName+year);
+        time_elm2=time_elm2.attr("id","timeE"+subCode+secName+year);
+        
 
       date_elm_html=date_elm.prop("outerHTML")
       time_elm1_html=time_elm1.prop("outerHTML")
       time_elm2_html=time_elm2.prop("outerHTML")
-      
+        //time_elm2_html.addEventListener("change", add(), false);
+      //time_elm1_html.addEventListener("change", addActivityItem, function{alert("finally")})
        row+="<tr id=\""+subCode+"-"+data[j]["id"]+"\"><td>"+secName+
        "</td><td>"+year+
        "</td><td>"+date_elm_html+
@@ -251,9 +268,6 @@ function fill_data_table(subCode,data){
        console.log("drawing row")
        
     //    datatable.row.add($(row)).draw()
-       
-
-
     }
 
     return row
@@ -307,25 +321,17 @@ function  update_attendenc_display(temp_data){
         
         console.log("hello")
         register_attendance_table_click(subject_table,subCode)
+        
         $("#table-"+subCode).ready(function(){
             
             $(".datepick").each(function(){
                 console.log("dedoed")
                 $(this).datetimepicker({format: 'DD/MM/YYYY'});
-            });
-
-            $(".timepick").each(function(){
-                
-                $(this).datetimepicker({
-                    format: 'HH:mm'
-                });
-            });
-
-            
+            });            
        });
-
+        
     }
-    
+  
 
 
 }

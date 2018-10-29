@@ -1,7 +1,7 @@
 from django.shortcuts import render,render_to_response
 from django.template import RequestContext
 from django.http import JsonResponse
-from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence
+from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence, collage_meta
 import json
 from django.db.models import F
 import datetime
@@ -33,8 +33,10 @@ def _openAttendance(request):
         body = json.loads(body_unicode)
         ID = body["id"]
         date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
-        sesFrom = body["From"]
-        sesTo = body["To"]
+        collegeMeta_id = body["From"]
+        colMet = collage_meta.objects.get(id = int(collegeMeta_id))
+        sesFrom = colMet.timeStart
+        sesTo = colMet.timeEnd
         print('Section')
         lecIncharge = Incharge.objects.get(id = int(ID))
         #need to add old data
@@ -60,12 +62,9 @@ def _openAttendance(request):
                 #oldStatusEntry.append(0)
 
         print("asdsa",studentList)
-        
-
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps({"old":1,"studentList":studentList}),safe=False)
-
 @csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
@@ -141,15 +140,18 @@ def _markingAttendance(request):
     else:
         incID = body["id"]
         subCode = body["subCode"]
-        sessionFrom = body["From"]
-        sessionTo = body["To"]
+        collegeMeta_id = body["From"]
+        colMet = collage_meta.objects.get(id = int(collegeMeta_id))
+        sessionFrom = colMet.timeStart
+        sessionTo = colMet.timeEnd
+        
         Date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
         lecIncharge = Incharge.objects.get(id = int(incID))
         attendies = body["absenties"]
         for stuID in attendies:
             stu = Students.objects.get(studentInfoFK_id = int(stuID))
             attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
-            #attInsert.save()
+            attInsert.save()
     return JsonResponse({'success':'success'})
 @csrf_protect    
 def _studentUnderSub(request):

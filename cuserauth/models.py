@@ -163,6 +163,18 @@ class Incharge(models.Model):
 
     def  __str__(self):
         return self.lecturerFK.LecturerName
+class collage_meta(models.Model):
+    collegefk = models.ForeignKey(College,on_delete=models.PROTECT)
+    isSaturday = models.BooleanField(default = False)
+    timeStart = models.TimeField(null=False)
+    timeEnd = models.TimeField(null=False)
+    isBreak = models.BooleanField(default = False)
+
+    class Meta:
+        unique_together = ('collegefk','timeStart','isSaturday','timeEnd')
+
+    def  __str__(self):
+        return self.collegefk.collegeName+" "+str(self.timeStart)+" "+str(self.timeEnd)
 '''
 def save(self, *args, **kwargs):
     # ... other things not important here
