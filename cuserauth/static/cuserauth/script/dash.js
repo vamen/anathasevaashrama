@@ -25,11 +25,8 @@ function update_attendance_modal(id,data,info){
     modal_body=modal.find(".modal-body")
     table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>"
     for(i=0;i<student_list.length;i++){
-        console.log((is_old?data.status[i]?" checked":" ":"not checked"))
-        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?student_list[i].statusField?" checked":" ":" ")+"/></td></tr>"
-        
-
-        
+        console.log(is_old?student_list[i].statusField?" checked":" ":"not checked")
+        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?student_list[i].statusField?"checked":" ":" ")+"/></td></tr>"
     }
    table+="</tbody></table>";  
    console.log(table)
@@ -143,19 +140,19 @@ function update_attendance_modal(id,data,info){
 
 
 function register_attendance_table_click(datatable){
-    /*datatable.on("change","timeS502A2", function(){
+    datatable.on("onchange","tbody tb #timeS", function(){
             alert("")
             //var sub=datatable.table().node().id.split("-")[1]
             
             /*subCode=datatable.table().node().id.split("-")[1]
             var data=datatable.row($(this).closest('tr')).data()
             var id=datatable.row($(this).closest('tr')).id().split("-")[1]
-            
+            */
             secName=data[0]
             year=data[1]
         //$("#timeE").selectedIndex = $("#timeS").val()
         }
-    );*/
+    );
     datatable.on('click','tbody td button',function(){
             // console.log("button click");
             // console.log(datatable.id)
