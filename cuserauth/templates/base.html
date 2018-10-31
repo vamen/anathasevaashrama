@@ -3,7 +3,6 @@
 <html>
     <head>
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
 			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cardo:400,700|Oswald">
             <link rel="stylesheet" type="text/css" href="{% static 'cuserauth/base.css' %}">
 
@@ -21,17 +20,18 @@
     <body class="bodycustom">
         <div class="container-full-bg header">
                      <div class="jumbotron jambo-style">
+					 
                         <div class="container-fluid">    
                                     {% block navbar %}
                                     {% endblock %}  
                         </div>
                         <div>
                             <h2 class="heading">{{ college_name }}</h2>
-                            <small class="sub-text">Attendance Awareness System</small>
+                            <small class="sub-text">Attendance Awareness System</small><br>
+							<!--<span class="logout-box"><a href="/logout">Logout </a></span>-->
                         </div> 
 
-                </div>
-                <hr>    
+                </div>  
 
             {% block content %}
             {% endblock %}  
