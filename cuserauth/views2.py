@@ -1,7 +1,7 @@
 from django.shortcuts import render,render_to_response
 from django.template import RequestContext
 from django.http import JsonResponse
-from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence
+from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course, Section, Course, Attendence, collage_meta
 import json
 from django.db.models import F
 import datetime
@@ -33,14 +33,16 @@ def _openAttendance(request):
         body = json.loads(body_unicode)
         ID = body["id"]
         date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
-        sesFrom = body["From"]
-        sesTo = body["To"]
+        collegeMeta_id = body["From"]
+        colMet = collage_meta.objects.get(id = int(collegeMeta_id))
+        sesFrom = colMet.timeStart
+        sesTo = colMet.timeEnd
         print('Section')
         lecIncharge = Incharge.objects.get(id = int(ID))
         #need to add old data
-        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionto = sesTo, sessionDate = date).annotate(studentID=F("studentFK_id")).values("studentID"))
+        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionDate = date).annotate(studentID=F("studentFK__studentInfoFK_id")).values_list("studentID", flat=True))
         print("attUpdate",attUpdate)
-        studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName'))
+        studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName').order_by('studentName'))
         if(len(studentList) == 0):
             raise Http404("Please Contact Pricipal for assigning classes")
         if len(attUpdate) == 0:
@@ -48,20 +50,21 @@ def _openAttendance(request):
             #return JsonResponse(json.dumps(studentList),safe=False)
             return JsonResponse(json.dumps({"old":0,"studentList":studentList}),safe=False)    
         
-        oldStatusEntry = []
+        #oldStatusEntry = []
         for student in studentList:
-            if student.studentID in attUpdate:
-                oldStatusEntry.append(1)
+
+            if student["studentID"] in attUpdate:
+                print(student["studentID"], attUpdate)
+                student["statusField"] = 1
+                #oldStatusEntry.append(1)
             else:
-                oldStatusEntry.append(0)
+                student["statusField"] = 0
+                #oldStatusEntry.append(0)
 
-        print("asdsa",studentList, "asdas",oldStatusEntry)
-        
-
+        print("asdsa",studentList)
         #print(sec)
         #print(studentList)
-        return JsonResponse(json.dumps({"old":1,"studentList":studentList, "StautsField":oldStatusEntry}),safe=False)
-
+        return JsonResponse(json.dumps({"old":1,"studentList":studentList}),safe=False)
 @csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
@@ -118,34 +121,36 @@ def _markingAttendance(request):
     body = json.loads(body_unicode)
 
     status = int(body["status"])
-    
+    incID = body["id"]
+    subCode = body["subCode"]
+    collegeMeta_id = body["From"]
+    colMet = collage_meta.objects.get(id = int(collegeMeta_id))
+    sessionFrom = colMet.timeStart
+    sessionTo = colMet.timeEnd
+    Date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
+    lecIncharge = Incharge.objects.get(id = int(incID))
+    attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sessionFrom, sessionDate = Date)
+    print(attUpdate)
+    attUpdate.delete()
     #make code more efficent by search the id and delete
     if status == 0:
         return JsonResponse({'status':'success'})
     elif status == 2:
-        #incID = body["id"]
-        #subCode = body["subCode"]
-        #sessionFrom = body["sessionfrom"]
-        #sessionTo = body["sessionto"]
-        #Date = body["date"]
-
-        #lecIncharge = Incharge.objects.get(id = int(incID))
-        #attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date)
-        #print(attUpdate)
-        #attUpdate.delete()
-        pass
+        colCode = body["college_code"]
+        secName = body["secName"]
+        year = body["year"]
+        studentList = Students.objects.filter(collegeFK = colCode,sectionFK__sectionName = secName, sectionFK__year = year).annotate(studentID=F("studentInfoFK_id")).values_list('studentID', flat=True)
+        for stuID in studentList:
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stuID,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
+            attInsert.save()
+        return JsonResponse({'status':'success'})
     else:
-        incID = body["id"]
-        subCode = body["subCode"]
-        sessionFrom = body["sessionfrom"]
-        sessionTo = body["sessionto"]
-        Date = datetime.datetime.strptime(body["date"],"%d/%m/%Y").strftime("%Y-%m-%d")
-        lecIncharge = Incharge.objects.get(id = int(incID))
         attendies = body["absenties"]
         for stuID in attendies:
             stu = Students.objects.get(studentInfoFK_id = int(stuID))
-            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = "10:00", sessionto = "10:40", sessionDate = Date, studentstatus = 0)
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
+        return JsonResponse({'success':'success'})
 @csrf_protect    
 def _studentUnderSub(request):
     if request.method == 'GET':
