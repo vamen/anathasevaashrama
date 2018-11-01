@@ -4,6 +4,18 @@
     color: white;
 
 }
+<style>/*.form-group {
+  position: relative
+}
+.form-group input[type="password"] {
+  padding-right: 30px
+}*/
+.form-group .glyphicon {
+  top:10px;
+  right: 0px;
+  position:absolute;
+  top:12px
+}</style>
 
 .header>hr{
     margin: 0%;
@@ -22,19 +34,23 @@
 
 .content-header{
     margin: 0%;
+	height:30px;
     width: 100%;
-    background: rgb(255,255,255); /*changed*/
-    color: white;
+    background: rgb(145,145,145) !important; /*changed*/
+    color: black;
+	text-transform: uppercase;
     padding-left: 15px;
+	padding-top: 5px;
     font-weight: bold;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+	font-family: Oswald, sans-serif;
+	text-align: left;
+    /*font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;*/
 }
 
 .content-body{
 
     padding: 15px;
 }
-
 
 .subject-bar-wrapper{
 
@@ -57,13 +73,13 @@
 
 .lecturer-name-box {
 
-    padding: 20%;
+    padding: 10%;
 
 }
 
 .lecturer-name {
     color: white !important;
-    text-align: left;
+    text-align: center;
     margin: 0%
 }
 
@@ -77,18 +93,19 @@
 .sidebar-wrapper {
     z-index: 100;
     /* left: 220px; */
-    color:rgb(192, 204, 212); /*changed*/
+    color:rgb(245,245,245)!important; /*changed*/
     width: 20%;
     height: 100%;
     /* margin-left: -220px; */
     overflow-y: auto;
     overflow-x: hidden;
-    background-color:#5c606d; /*changed*/
+    background-color:rgb(0,0,0) !important; /*changed*/
+	font-size:18px;
 }
 
 .page-content-wrapper {
     /* width: 100%; */
-    background: #faf9f9;
+    background:rgb(245,245,245) !important;
     flex: 1;
 
     
@@ -100,7 +117,9 @@
     margin: 0;
     padding: 0;
     list-style: none;
-	background-color: #5c606d; /*changed*/
+	background-color:rgb(0,0,0)  !important; /*changed*/
+	font-family: Oswald, sans-serif;
+	text-transform: uppercase;
   }
   
   .sidebar-nav li {
@@ -117,17 +136,27 @@
   .sidebar-nav li >a:hover {
     text-decoration: none;
     color: #fff;
-    background: rgb(242, 195, 0);
+    background: rgb(145,145,145) !important;
   }
   
 
   .sidebar-nav li a:active, .sidebar-nav li a:focus {
     text-decoration: none;
   }
+hr {
+
+  width: 100%;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  /*background-color:rgb(242, 195, 0) !important;*/
+}  
   
   .sidebar-nav>.sidebar-brand {
     /* height: 65px; */
-    line-height: 40px;
+    line-height: 60px;
 
   }
   
@@ -151,31 +180,41 @@
   
 
   .logout-box:hover{
-    background-color: rgb(189, 189, 189);
+    /*background-color: black;*/
+	color: white;
+	text-decoration:underline;
 }
    
     
 
   .logout-box{
         display: inline-block;
-        padding-right:20px; 
+		/*padding-left: 50px;
+        padding-right:100px; 
         border-color: rgb(199, 199, 199);
-        border-style:solid; 
+        border-style:solid;
         border-width: thin;
-        margin-left: 10px;
-        line-height: 1.4;
+        margin-left: 50px;
+        line-height: 2.0;
+		text-align: center;
+		background-color: rgb(242, 195, 0) !important;*/
+		padding-left: 100px;
+        padding-right:100px;
+		font-family:Cardo, serif;
+		color: rgb(242, 195, 0) !important;
+		text-transform:uppercase;
 }
 
     
 .sidebar-selected-item{
-    color:white !important;  /*changed*/
-    background: :rgb(242, 195, 0)!important; /*changed*/
+    color: rgb(0,0,0)!important;  /*changed*/
+    background-color:rgb(242,242,242)!important; /*changed*/
 
     
   }
 
 .sidebar-selected-item>active:after{
-
+	 background-color: :rgb(242, 195, 0)!important; 
 }
 
 
