@@ -10,6 +10,8 @@ function update_attendance_modal(id,data,info){
     from=info["From"]
     to=info["To"]
     
+    console.log("from")
+    console.log(from)
     student_list=data["studentList"]
     is_old=data["old"]?true:false
 
@@ -170,8 +172,8 @@ function register_attendance_table_click(datatable){
             year=data[1]
             
             date=$("#datepick"+subCode+secName+year).find("input").val();
-            from=$("#timeS"+subCode+secName+year).val();
-            to=$("#timeE"+subCode+secName+year).val();
+            from=$("#timeS"+subCode+secName+year).text();
+            to=$("#timeE"+subCode+secName+year).text();
             console.log("date :"+"#datepick"+subCode+secName+year)
             console.log(from)
             console.log(to)

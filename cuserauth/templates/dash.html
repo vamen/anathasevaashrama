@@ -144,7 +144,7 @@
 </div>
 
 <!--<div style="display: none" class='input-group date' id='timepicker1'>-->
-    <select name="timeS" id="timeS" class="custom-select form-control">
+    <select  id="timeS" class="custom-select form-control times">
         <option selected disabled value="-1">Select session</option>
         {% for tim in timmings %}
         <option value={{ tim.id}}>{{ tim.timeStart}}</option>
@@ -156,7 +156,7 @@
     </span>-->
 <!--</div>
 <div style="display: none" class='input-group date' id='timepicker2'>-->
-    <select name="timeE" id="timeE" class="custom-select form-control">
+    <select  id="timeE" class="custom-select form-control timeE">
         <option selected disabled value="-1">Select session</option>
         {% for tim in timmings %}
         <option value={{tim.id}}>{{ tim.timeEnd}}</option>
