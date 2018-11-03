@@ -25,6 +25,7 @@ def _sectionHandler(request, id):
     studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
+
 @csrf_protect
 def _openAttendance(request):
     if request.method == 'POST':
@@ -65,6 +66,7 @@ def _openAttendance(request):
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps({"old":1,"studentList":studentList}),safe=False)
+
 @csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
@@ -136,7 +138,7 @@ def _markingAttendance(request):
     if status == 0:
         return JsonResponse({'status':'success'})
     elif status == 2:
-        colCode = body["college_code"]
+        colCode = request.COOKIES.get('collegeCode')
         secName = body["secName"]
         year = body["year"]
         studentList = Students.objects.filter(collegeFK = colCode,sectionFK__sectionName = secName, sectionFK__year = year).annotate(studentID=F("studentInfoFK_id")).values_list('studentID', flat=True)
@@ -151,6 +153,8 @@ def _markingAttendance(request):
             attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
         return JsonResponse({'success':'success'})
+
+
 @csrf_protect    
 def _studentUnderSub(request):
     if request.method == 'GET':

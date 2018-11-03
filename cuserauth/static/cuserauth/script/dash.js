@@ -2,41 +2,45 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
+
+function onsubmit_click(){
+
+}
 function update_attendance_modal(id,data,info){
+    console.log("called update attendance")
     data=JSON.parse(data)
     subCode=info["subCode"]
     secName=info["secName"]
+    year=info["year"]
     date=info["Date"]
     from=info["From"]
     to=info["To"]
-    
-    console.log("from")
-    console.log(from)
+    from_time=$("#timeS"+subCode+secName+year+" option:selected").text()
+    to_time=$("#timeE"+subCode+secName+year+" option:selected").text()   
     student_list=data["studentList"]
-    is_old=data["old"]?true:false
+    is_old=data["old"]?true:false;
 
     
     
-    console.log(is_old)
-    
-    subName=$("#"+subCode).text().split("|")[1]
+
+    subName=$("#"+subCode).text().split("|")[1];
 
  
-    modal=$("#"+id).modal('show')
+    modal=$("#"+id).modal('show');
     modal.find(".modal-title").text("Mark attendance | "+subName+" ( Section : "+secName+")");
-    modal_body=modal.find(".modal-body")
-    table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>"
+    modal_body=modal.find(".modal-body");
+    table="<table id=\"attd-table\" class=\"table table-striped\"><thead><tr><th>Student Roll</th><th>Student Name</th><th><input  type=\"checkbox\" id=\"mark-all\"/> Mark all absent</th></tr></thead><tbody>";
     for(i=0;i<student_list.length;i++){
-        console.log(is_old?student_list[i].statusField?" checked":" ":"not checked")
-        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?student_list[i].statusField?"checked":" ":" ")+"/></td></tr>"
+        console.log(is_old?student_list[i].statusField?" checked":" ":"not checked");
+        table+="<tr><td>"+student_list[i].studentID+"</td><td>"+student_list[i].studentName+"</td><td><input class=\"mark\" name=\"mark\" type=\"checkbox\" id=\""+student_list[i].studentID+"\""+(is_old?student_list[i].statusField?"checked":" ":" ")+"/></td></tr>";
     }
    table+="</tbody></table>";  
-   console.log(table)
-   modal_body.empty()
-   modal_body.append("<span>date : "+date+" </span>")
-   modal_body.append("<span>From : "+from+" </span>")
-   modal_body.append("<span>To : "+to+" </span>") 
-   modal_body.append(table)
+   modal_body.empty();
+   modal_body.append("<span>date : "+date+" </span>");;
+   modal_body.append("<span>From : "+from_time+" </span>");
+   modal_body.append("<span>To : "+to_time+" </span>"); 
+   modal_body.append(table);
     
     $("#mark-all").click(function(e){
         
@@ -58,7 +62,7 @@ function update_attendance_modal(id,data,info){
         
         if ($('.mark:checked').length == $('.mark').length ){
             
-            $("#mark-all").prop('checked', true)
+            $("#mark-all").prop('checked', true);
             
         }
 
@@ -66,7 +70,7 @@ function update_attendance_modal(id,data,info){
 
     $("#modal-submit-data").click(function(){
         
-        console.log("cliecked on submit")       
+        console.log("cliecked on submit");
         var mark_data=[]
 
         if ($('.mark:checked').length==0){
@@ -77,7 +81,7 @@ function update_attendance_modal(id,data,info){
         }else{
             
             status=1
-            console.log($('.mark:checked'))
+
             checkboxes = document.getElementsByName('mark');
             
             for(var i=0, n=checkboxes.length;i<n;i++) {
@@ -101,7 +105,7 @@ function update_attendance_modal(id,data,info){
         }
 
         
-         console.log(post_data)
+
         var csrftoken = Cookies.get('csrftoken');
         $.ajaxSetup({
                 beforeSend: function(xhr, settings) {
@@ -113,14 +117,14 @@ function update_attendance_modal(id,data,info){
             });
         $.ajax({
                 
-            type: "POST",
+                type: "POST",
                 url: "/mark_attendance",
-    
                 data: JSON.stringify(post_data),
                 success: function(msg){
 
                    console.log(msg) 
                    modal=$("#"+id)
+                   $("#modal-submit-data").unbind("click")
                    modal.find(".modal-title").text()
                    modal.find(".modal-body").empty()
                    modal.modal('hide')
@@ -143,47 +147,35 @@ function update_attendance_modal(id,data,info){
 
 function register_attendance_table_click(datatable){
     datatable.on("onchange","tbody tb #timeS", function(){
-            alert("")
-            //var sub=datatable.table().node().id.split("-")[1]
-            
-            /*subCode=datatable.table().node().id.split("-")[1]
-            var data=datatable.row($(this).closest('tr')).data()
-            var id=datatable.row($(this).closest('tr')).id().split("-")[1]
-            */
+           
             secName=data[0]
             year=data[1]
         //$("#timeE").selectedIndex = $("#timeS").val()
         }
     );
     datatable.on('click','tbody td button',function(){
-            // console.log("button click");
-            // console.log(datatable.id)
-            // // this.parent.parent.id
-            // // this.
-
+           
             
-            subCode=datatable.table().node().id.split("-")[1]
+            var subCode=datatable.table().node().id.split("-")[1]
             var data=datatable.row($(this).closest('tr')).data()
             var id=datatable.row($(this).closest('tr')).id().split("-")[1]
 
-            // var idx = datatable.cell('.selected', 0).index();
-            // var data = datatable.row( idx.row ).data();
-            secName=data[0]
-            year=data[1]
+            var secName=data[0]
+            var year=data[1]
             
-            date=$("#datepick"+subCode+secName+year).find("input").val();
-            from=$("#timeS"+subCode+secName+year).text();
-            to=$("#timeE"+subCode+secName+year).text();
-            console.log("date :"+"#datepick"+subCode+secName+year)
-            console.log(from)
-            console.log(to)
+            var date=$("#datepick"+subCode+secName+year).find("input").val();
+            var from=$("#timeS"+subCode+secName+year).val();
+            var to=$("#timeE"+subCode+secName+year).val();
+            
+
+
             if(date==""||from==null||to==null){
                     alert("please provide valid date or time")
                     return;
             }
-            college_code=Cookies.get('collegeCode');
-            userid=Cookies.get('userid');
-            post_data={"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}
+            var college_code=Cookies.get('collegeCode');
+            var userid=Cookies.get('userid');
+            var post_data={"collegeCode":college_code,"userID":userid,"id":id,"subCode":subCode,"secName":secName,"year":year,"Date":date,"From":from,"To":to}
             var csrftoken = Cookies.get('csrftoken');         
             $.ajaxSetup({
                 beforeSend: function(xhr, settings) {
@@ -199,7 +191,7 @@ function register_attendance_table_click(datatable){
     
                 data: JSON.stringify(post_data),
                 success: function(msg){
-                //    console.log(msg);   
+                   console.log(msg);   
                 //    console.log($("#model1").find("h4.model-title"));
                    update_attendance_modal("modal1",msg,post_data);
                 },

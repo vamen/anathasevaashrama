@@ -1,4 +1,5 @@
 from django.db import models
+from .utils.model_utils import ChoiceEnum
 
 # Create your models here.
 '''
@@ -124,16 +125,30 @@ class Students(models.Model):
     '''
 
 class Attendence(models.Model):
+    
+    #Constants
+    class MessageStatus(ChoiceEnum):
+        NOTSENT="notsent"
+        SENT="sent"
+        DELIVERRD="delivered"
+        DONTSEND="dontsend"            
+        
+    
+
+
     #Forign Key
     subjectFK = models.ForeignKey(Subjects,on_delete=models.PROTECT)
     studentFK = models.ForeignKey(Students,on_delete=models.CASCADE)
+    
     #fields
     sessionfrom=models.TimeField()
     sessionto=models.TimeField()
 
     sessionDate=models.DateField()
     studentstatus=models.IntegerField()
-    #classes
+    messageSentStatus=models.CharField(max_length=20,choices=MessageStatus.choices(),default=MessageStatus.NOTSENT.value)
+    
+    
     def  __str__(self):
         return self.studentFK.studentInfoFK.studentName
 
