@@ -141,8 +141,8 @@ class Attendence(models.Model):
     studentFK = models.ForeignKey(Students,on_delete=models.CASCADE)
     
     #fields
-    sessionfrom=models.TimeField()
-    sessionto=models.TimeField()
+    sessionFrom=models.TimeField()
+    sessionTo=models.TimeField()
 
     sessionDate=models.DateField()
     studentstatus=models.IntegerField()
