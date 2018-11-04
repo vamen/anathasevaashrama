@@ -40,23 +40,29 @@ class Command(BaseCommand):
            absent_list=Attendence.objects.filter(messageSentStatus=Attendence.MessageStatus.NOTSENT.value)
            students=absent_list.distinct("studentFK")          
            for entry in students:
-                self.init_message()
-                email_text=entry.studentFK.studentInfoFK.studentName+" was absent for following classes :\n"   
-                to=entry.studentFK.studentInfoFK.fatherEmail
-                self.msg["to"]=to
-                print(to)
-                studentFK=entry.studentFK
-                absent_classes_dates=absent_list.filter(studentFK=studentFK).values("sessionDate").distinct("sessionDate") 
-                for date in absent_classes_dates:
-                    date=date["sessionDate"].strftime("%Y-%m-%d")
-                    email_text=email_text+" on date : "+str(date)+"\n"
-                    absent_subjects=absent_list.filter(studentFK=studentFK,sessionDate=date,messageSentStatus=Attendence.MessageStatus.NOTSENT.value)
-                    for absent_subject in absent_subjects:
-                        email_text=email_text+absent_subject.subjectFK.subjectName+" from "+str(absent_subject.sessionFrom)+" to "+str(absent_subject.sessionTo)+"\n"
-                print(email_text)
-                self.msg.attach(MIMEText(email_text))
-                self.server.sendmail(gmail_user,to,self.msg.as_string()) 
-                print("email sent for ",entry.studentFK.studentInfoFK.studentName)
+                try: 
+                    self.init_message()
+                    email_text=entry.studentFK.studentInfoFK.studentName+" was absent for following classes :\n"   
+                    to=entry.studentFK.studentInfoFK.fatherEmail
+                    self.msg["to"]=to
+                    print(to)
+                    studentFK=entry.studentFK
+                    absent_classes_dates=absent_list.filter(studentFK=studentFK).values("sessionDate").distinct("sessionDate") 
+                    for date in absent_classes_dates:
+                        date=date["sessionDate"].strftime("%Y-%m-%d")
+                        email_text=email_text+" on date : "+str(date)+"\n"
+                        absent_subjects=absent_list.filter(studentFK=studentFK,sessionDate=date,messageSentStatus=Attendence.MessageStatus.NOTSENT.value)
+                        for absent_subject in absent_subjects:
+                            email_text=email_text+absent_subject.subjectFK.subjectName+" from "+str(absent_subject.sessionFrom)+" to "+str(absent_subject.sessionTo)+"\n"
+                   
+                    self.msg.attach(MIMEText(email_text))
+                    self.server.sendmail(gmail_user,to,self.msg.as_string())
+                    data=absent_list.filter(studentFK=studentFK).update(messageSentStatus=Attendence.MessageStatus.SENT.value)
+                    print(data)
+                    print("email sent for ",entry.studentFK.studentInfoFK.studentName)
+                    
+                except Exception as e:
+                    print("unable to send message",str(e))
                 time.sleep(0.5)  
            self.server.quit()       
     

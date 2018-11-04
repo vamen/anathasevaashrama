@@ -41,7 +41,7 @@ def _openAttendance(request):
         print('Section')
         lecIncharge = Incharge.objects.get(id = int(ID))
         #need to add old data
-        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sesFrom, sessionDate = date).annotate(studentID=F("studentFK__studentInfoFK_id")).values_list("studentID", flat=True))
+        attUpdate = list(Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionFrom = sesFrom, sessionDate = date).annotate(studentID=F("studentFK__studentInfoFK_id")).values_list("studentID", flat=True))
         print("attUpdate",attUpdate)
         studentList = list(Students.objects.filter(collegeFK = lecIncharge.lecturerFK.collegeFK,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id"),studentName=F("studentInfoFK__studentName")).values('studentID','studentName').order_by('studentName'))
         if(len(studentList) == 0):
@@ -131,7 +131,7 @@ def _markingAttendance(request):
     sessionTo = colMet.timeEnd
     Date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
     lecIncharge = Incharge.objects.get(id = int(incID))
-    attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionfrom = sessionFrom, sessionDate = Date)
+    attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionFrom = sessionFrom, sessionDate = Date)
     print(attUpdate)
     attUpdate.delete()
     #make code more efficent by search the id and delete
@@ -143,14 +143,14 @@ def _markingAttendance(request):
         year = body["year"]
         studentList = Students.objects.filter(collegeFK = colCode,sectionFK__sectionName = secName, sectionFK__year = year).annotate(studentID=F("studentInfoFK_id")).values_list('studentID', flat=True)
         for stuID in studentList:
-            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stuID,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stuID,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
         return JsonResponse({'status':'success'})
     else:
         attendies = body["absenties"]
         for stuID in attendies:
             stu = Students.objects.get(studentInfoFK_id = int(stuID))
-            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionfrom = sessionFrom, sessionto = sessionTo, sessionDate = Date, studentstatus = 0)
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
         return JsonResponse({'success':'success'})
 
