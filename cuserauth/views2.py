@@ -5,13 +5,14 @@ from .models import Lecturers,College,Subjects,Incharge, Students, Offerd_course
 import json
 from django.db.models import F
 import datetime
-from django.views.decorators.csrf import requires_csrf_token, ensure_csrf_cookie, csrf_protect
+from django.core.exceptions import *
+from django.views.decorators.csrf import requires_csrf_token, ensure_csrf_cookie, csrf_protect, csrf_exempt
 
 db_tables = [{"id":1,"tables":'Students'},{"id": 2,"tables":'Course'},{"id": 3,"tables":'Subjects'},{"id": 4,"tables":'Teacher assignment'},{"id": 5,"tables": 'Attendence'},{"id": 6,"tables": 'Lecturers'}]
 
 def excel_upload(request):
     return render_to_response("excel.html", {"tables":db_tables},RequestContext(request))
-
+@csrf_exempt
 def _sectionHandler(request, id):
     #if request.method == 'POST':
     print('Section')
@@ -25,8 +26,8 @@ def _sectionHandler(request, id):
     studentList = list(Students.objects.filter(sectionFK = sec.sectionFK).values('studentInfoFK_id', 'studentInfoFK__studentName'))
     print(studentList)
     return JsonResponse(json.dumps(studentList),safe=False)
-
-@csrf_protect
+@csrf_exempt
+#@csrf_protect
 def _openAttendance(request):
     if request.method == 'POST':
         print("_openAttendence")
@@ -55,19 +56,19 @@ def _openAttendance(request):
         for student in studentList:
 
             if student["studentID"] in attUpdate:
-                print(student["studentID"], attUpdate)
+                #print(student["studentID"], attUpdate)
                 student["statusField"] = 1
                 #oldStatusEntry.append(1)
             else:
                 student["statusField"] = 0
                 #oldStatusEntry.append(0)
 
-        print("asdsa",studentList)
+        #print("asdsa",studentList)
         #print(sec)
         #print(studentList)
         return JsonResponse(json.dumps({"old":1,"studentList":studentList}),safe=False)
-
-@csrf_protect
+@csrf_exempt
+#@csrf_protect
 def subject_handeled_info(request):    
     if request.method == 'POST':
         print("_openAttendence")
@@ -86,13 +87,13 @@ def subject_handeled_info(request):
             dataAdd = {'subCode':subjectInfo['subCode'], 'subName':subjectInfo['subName'],'sections':listingSubs}
             listOfSubs.append(dataAdd)
             #lister.update
-        print(listOfSubs)
+        #print(listOfSubs)
         if(len(listOfSubs) == 0):
             raise JsonResponse("Please Contact Pricipal for assigning classes")
         return JsonResponse(listOfSubs,safe=False)
 
-
-@csrf_protect
+@csrf_exempt
+#@csrf_protect
 def _studentUnderSub(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -116,8 +117,14 @@ def _studentUnderSub(request):
     print(students)
     return JsonResponse({'students':students})
 
-
-@csrf_protect
+def intersection(lst1, lst2): 
+  
+    # Use of hybrid method 
+    temp = set(lst2) 
+    lst3 = [value for value in lst1 if value in temp] 
+    return lst3 
+@csrf_exempt
+#@csrf_protect
 def _markingAttendance(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -126,36 +133,57 @@ def _markingAttendance(request):
     incID = body["id"]
     subCode = body["subCode"]
     collegeMeta_id = body["From"]
+
     colMet = collage_meta.objects.get(id = int(collegeMeta_id))
     sessionFrom = colMet.timeStart
     sessionTo = colMet.timeEnd
     Date = datetime.datetime.strptime(body["Date"],"%d/%m/%Y").strftime("%Y-%m-%d")
+    ###
     lecIncharge = Incharge.objects.get(id = int(incID))
-    attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionFrom = sessionFrom, sessionDate = Date)
+    attUpdate = Attendence.objects.filter(subjectFK = lecIncharge.subjectFK, sessionFrom = sessionFrom, sessionDate = Date).values_list('studentFK_id',flat = True)
     print(attUpdate)
-    attUpdate.delete()
+    #####
     #make code more efficent by search the id and delete
     if status == 0:
         return JsonResponse({'status':'success'})
     elif status == 2:
         colCode = request.COOKIES.get('collegeCode')
-        secName = body["secName"]
-        year = body["year"]
-        studentList = Students.objects.filter(collegeFK = colCode,sectionFK__sectionName = secName, sectionFK__year = year).annotate(studentID=F("studentInfoFK_id")).values_list('studentID', flat=True)
-        for stuID in studentList:
-            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stuID,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
+        
+        attendies = Students.objects.filter(collegeFK = colCode,sectionFK = lecIncharge.sectionFK).annotate(studentID=F("studentInfoFK_id")).values_list('studentID', flat=True)
+        print(attendies)
+        for stuID in attendies:
+            attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK_id = stuID,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
         return JsonResponse({'status':'success'})
     else:
         attendies = body["absenties"]
-        for stuID in attendies:
-            stu = Students.objects.get(studentInfoFK_id = int(stuID))
+
+    intersect = intersection(attendies, attUpdate)
+    #print("intersection",intersect)
+
+    for delID in attUpdate:
+        if str(delID) not in intersect:
+            delEntry = Attendence.objects.filter(studentFK_id = str(delID),subjectFK = lecIncharge.subjectFK, sessionFrom = sessionFrom, sessionDate = Date)
+            delEntry.delete()
+
+    for studentID in attendies:
+        stu = Students.objects.get(studentInfoFK_id = int(studentID))
+        if str(stu.studentInfoFK_id) not in intersect:
             attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
             attInsert.save()
-        return JsonResponse({'success':'success'})
+            
+    #for stuID in attendies:
+    #    try:
+    #        oldAtt = Attendence.objects.get(subjectFK = lecIncharge.subjectFK, sessionFrom = sessionFrom, sessionDate = Date)
+    #        stu = Students.objects.get(studentInfoFK_id = int(stuID))
+    #        if stu.
+    #    except ObjectDoesNotExist:
+    #        attInsert = Attendence(subjectFK = lecIncharge.subjectFK, studentFK = stu,sessionFrom = sessionFrom, sessionTo = sessionTo, sessionDate = Date, studentstatus = 0)
+    #        attInsert.save()
+    return JsonResponse({'success':'success'})
 
-
-@csrf_protect    
+@csrf_exempt
+#@csrf_protect    
 def _studentUnderSub(request):
     if request.method == 'GET':
         body_unicode = request.body.decode('utf-8') 

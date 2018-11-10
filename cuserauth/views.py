@@ -114,8 +114,8 @@ def _dashboard(request, collegeCode, userid):
 
 @csrf_exempt
 def login(request):
-    @ensure_csrf_cookie
-    @csrf_protect
+    #@ensure_csrf_cookie
+    #@csrf_protect
     def authenticate(request):
         body_unicode = request.body.decode('utf-8') 
         body = json.loads(body_unicode)
@@ -127,7 +127,7 @@ def login(request):
         #check for college
         return JsonResponse(authenticate_user(collegeCode,user,password)) 
 
-    @ensure_csrf_cookie
+    #@ensure_csrf_cookie
     def loadPage(request):           
         print("load")
         return render(request,'index.html')

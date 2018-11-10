@@ -133,9 +133,6 @@ class Attendence(models.Model):
         DELIVERRD="delivered"
         DONTSEND="dontsend"            
         
-    
-
-
     #Forign Key
     subjectFK = models.ForeignKey(Subjects,on_delete=models.PROTECT)
     studentFK = models.ForeignKey(Students,on_delete=models.CASCADE)
