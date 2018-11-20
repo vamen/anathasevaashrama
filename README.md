@@ -1,4 +1,4 @@
-# anathasevaashrama
+# anathasevaashrama(college management web application)
 
 # prerequisites :
   django,
